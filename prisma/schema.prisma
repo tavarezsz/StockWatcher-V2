@@ -1,0 +1,112 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/db/prisma/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// User
+// Em dev (sem auth), use um id fixo tipo "dev-user-1".
+// ─────────────────────────────────────────────
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  walletItems WalletItem[]
+  alerts      Alert[]
+}
+
+// ─────────────────────────────────────────────
+// Stock — espelha o StockModel do TypeScript.
+// Funciona também como cache: lastChange indica a última
+// atualização vinda do provider (Yahoo/brapi).
+// ─────────────────────────────────────────────
+model Stock {
+  symbol           String    @id
+  name             String
+  price            Float
+  openPrice        Float
+  changePercentDay Float
+  dayHigh          Float
+  dayLow           Float
+  dividendYield    Float
+  priceToBook      Float?
+  peRatio          Float?
+  lastChange       DateTime?
+
+  walletItems WalletItem[]
+  alerts      Alert[]
+}
+
+// ─────────────────────────────────────────────
+// WalletItem — equivalente ao StockInstance, mas como
+// relação persistida entre User e Stock.
+// O WalletModel (totalValue, totalProfitLoss etc.) é
+// calculado a partir daqui pelo WalletService, não persistido.
+//
+// referencePrice: preço no momento da adição — necessário
+// pra calcular totalProfitLoss (StockInstance original não tinha
+// esse campo; ajuste se não fizer sentido pro seu caso).
+// ─────────────────────────────────────────────
+model WalletItem {
+  id             String   @id @default(uuid())
+  quantity       Float    @default(0)
+  referencePrice Float
+  createdAt      DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  stockSymbol String
+  stock       Stock  @relation(fields: [stockSymbol], references: [symbol])
+
+  @@unique([userId, stockSymbol])
+  @@index([stockSymbol])
+}
+
+// ─────────────────────────────────────────────
+// Alert — espelha o AlertModel.
+// targetAsset do TypeScript (objeto StockModel completo) vira
+// uma relação com Stock por symbol, evitando duplicar os dados
+// do ativo dentro de cada alerta.
+// ─────────────────────────────────────────────
+enum AlertStatus {
+  ativo
+  disparado
+  pausado
+}
+
+enum TargetValueType {
+  value
+  variationDay
+}
+
+enum TargetCondition {
+  above
+  below
+}
+
+model Alert {
+  id              String           @id @default(uuid())
+  status          AlertStatus      @default(ativo)
+  targetValue     Float
+  targetValueType TargetValueType
+  targetCondition TargetCondition
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime?        @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  stockSymbol String
+  targetAsset Stock  @relation(fields: [stockSymbol], references: [symbol])
+
+  @@index([status])
+  @@index([stockSymbol])
+}
