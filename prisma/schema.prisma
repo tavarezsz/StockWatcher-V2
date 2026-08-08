@@ -50,7 +50,7 @@ model Stock {
 // O WalletModel (totalValue, totalProfitLoss etc.) é
 // calculado a partir daqui pelo WalletService, não persistido.
 //
-// referencePrice: preço no momento da adição — necessário
+// referencePrice: preço no momento da adição — necessário  
 // pra calcular totalProfitLoss (StockInstance original não tinha
 // esse campo; ajuste se não fizer sentido pro seu caso).
 // ─────────────────────────────────────────────
