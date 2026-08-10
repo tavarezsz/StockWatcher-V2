@@ -66,8 +66,7 @@ model WalletItem {
   stockSymbol String
   stock       Stock  @relation(fields: [stockSymbol], references: [symbol])
 
-  @@unique([userId, stockSymbol])
-  @@index([stockSymbol])
+  @@index([userId, stockSymbol])
 }
 
 // ─────────────────────────────────────────────

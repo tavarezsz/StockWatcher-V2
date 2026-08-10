@@ -12,7 +12,21 @@ export class PrismaStockRepository implements StockRepository {
     return stocks;
   }
 
-  async create(stock: StockModel): Promise<StockModel> {
+  async findBySymbol(symbol: string): Promise<StockModel | null>{
+    const stock = await db.stock.findUnique({
+      where: {symbol: symbol}
+    })
+    return stock
+  }
+
+  async findManyBySymbol(symbols: string[]): Promise<StockModel[]>{
+    const stocks = await db.stock.findMany({
+      where: {symbol: { in: symbols}}
+    })
+    return stocks
+  }
+
+  async createOrUpdate(stock: StockModel): Promise<StockModel> {
 
     return await db.stock.upsert({
       where: { symbol: stock.symbol },
@@ -26,7 +40,7 @@ export class PrismaStockRepository implements StockRepository {
         dividendYield: stock.dividendYield,
         priceToBook: stock.priceToBook,
         peRatio: stock.peRatio,
-        lastChange: stock.lastChange,
+        lastChange: new Date(),
       },
       create: {
         symbol: stock.symbol,
@@ -39,8 +53,28 @@ export class PrismaStockRepository implements StockRepository {
         dividendYield: stock.dividendYield,
         priceToBook: stock.priceToBook,
         peRatio: stock.peRatio,
-        lastChange: stock.lastChange,
+        lastChange: new Date(),
       },
     });
   }
+
+  //Essa função é voltada pra testes, não vai existir deleção fisica de ações na aplicação
+  async delete(symbol: string): Promise<StockModel>{
+
+
+    const searchStock = await this.findBySymbol(symbol)
+
+    if(!searchStock){
+      throw new Error("Ação não encontrada")
+    }
+
+    const stock = await db.stock.delete({
+      where: {
+        symbol: symbol
+      }
+    })
+
+    return stock
+  }
+
 }

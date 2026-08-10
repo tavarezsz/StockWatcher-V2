@@ -2,12 +2,12 @@ import { StockModel } from "@/models/stock-model"
 
 export interface StockRepository{
     findAll(): Promise<StockModel[]>
-    findBySymbol(symbol: string): Promise<StockModel>
+    findBySymbol(symbol: string): Promise<StockModel | null>
+    findManyBySymbol(symbols: string[]): Promise<StockModel[]>
 
     //mutation
 
-    create(stock: StockModel): Promise<StockModel>
-    update(symbol: string, newStockData: Omit<StockModel, 'symbol' | 'lastChange'>): Promise<StockModel>
+    createOrUpdate(stock: StockModel): Promise<StockModel>
     delete(symbol: string): Promise<StockModel>
 
 

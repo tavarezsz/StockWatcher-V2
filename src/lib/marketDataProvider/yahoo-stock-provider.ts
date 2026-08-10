@@ -123,11 +123,3 @@ export class yahooStockProvider implements MarketDataProvider {
     }
   }
 }
-
-
-(async () => {
-  const test = new yahooStockProvider();
-  const result = await test.search("Petrobras");
-
-  console.log("Teste completo:", result);
-})();
