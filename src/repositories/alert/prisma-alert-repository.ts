@@ -1,6 +1,7 @@
 import { AlertModel } from "@/models/alert-model";
 import { AlertRepository } from "./alert-repository";
 import { TargetValueType, TargetCondition } from "@/models/alert-model";
+import { Alert } from "@/db/prisma/generated";
 
 import "dotenv/config";
 
@@ -8,12 +9,12 @@ import { db } from "../client";
 import { AlertStatus } from "@/db/prisma/generated";
 
 export class PrismaAlertRepository implements AlertRepository {
-  async findAll(): Promise<AlertModel[]> {
+  async findAll(): Promise<Alert[]> {
     const alerts = await db.alert.findMany();
     return alerts;
   }
 
-  async findById(id: string): Promise<AlertModel> {
+  async findById(id: string): Promise<Alert> {
     const alert = await db.alert.findUnique({
       where: { id: id },
     });
@@ -25,7 +26,7 @@ export class PrismaAlertRepository implements AlertRepository {
     return alert;
   }
 
-  async findAllByUser(userId: string): Promise<AlertModel[]> {
+  async findAllByUser(userId: string): Promise<Alert[]> {
     const alerts = await db.alert.findMany({
       where: { userId: userId },
     });
@@ -38,7 +39,7 @@ export class PrismaAlertRepository implements AlertRepository {
     targetValue: number,
     targetValueType: TargetValueType,
     targetCondition: TargetCondition,
-  ): Promise<AlertModel> {
+  ): Promise<Alert> {
     const alert = await db.alert.create({
       data: {
         status: "ativo",
@@ -63,7 +64,7 @@ export class PrismaAlertRepository implements AlertRepository {
         "status" | "targetValue" | "targetValueType" | "targetCondition"
       >
     >,
-  ): Promise<AlertModel> {
+  ): Promise<Alert> {
     try {
       return await db.alert.update({
         where: { id },
@@ -74,7 +75,7 @@ export class PrismaAlertRepository implements AlertRepository {
     }
   }
 
-  async delete(id: string): Promise<AlertModel> {
+  async delete(id: string): Promise<Alert> {
     try{
         return await db.alert.delete({
             where: {id: id}
@@ -83,4 +84,28 @@ export class PrismaAlertRepository implements AlertRepository {
         throw new Error("Alerta não encontrado")
     }
   }
+
+  async findAllActive():Promise<Alert[]>{
+    try{
+      return await db.alert.findMany({
+        where: {status: "ativo"}
+      })
+    } catch(err){
+        throw new Error("Erro ao buscar alertas")
+    }
+  }
+
+  async markAsTriggered(id: string): Promise<void> {
+    try {await db.alert.update({
+      where: {id},
+      data: {
+        status: "disparado"
+      }
+    })
+  } catch(err){
+    throw new Error("Alerta não encontrado")
+  }
+    
+  }
+  
 }

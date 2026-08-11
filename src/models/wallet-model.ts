@@ -1,6 +1,7 @@
 import { StockModel } from "./stock-model"
 
 export type StockInstance = {
+    itemId: string;
     stock: StockModel;
     quantity: number;
     referencePrice: number;

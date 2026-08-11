@@ -5,6 +5,7 @@ export type TargetCondition = "above" | "below"
 
 
 export type AlertModel = {
+    id?: string
     status: "ativo" | "disparado" | "pausado"
     stockSymbol: string
     targetValue: number
