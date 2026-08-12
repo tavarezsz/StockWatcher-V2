@@ -9,6 +9,7 @@
 
   /* Brand */
   --color-primary: var(--color-aztec-950);
+  --color-muted: #7C8D87;
   --color-primary-hover: var(--color-aztec-800);
 
   --color-border: #E1EBF5;

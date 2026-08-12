@@ -1,25 +1,18 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import clsx from 'clsx';
-import {
-  ChartPieIcon,
-  LayoutDashboardIcon,
-  BellIcon,
-  CogIcon,
-  CircleQuestionMarkIcon,
-  SearchIcon,
-} from 'lucide-react';
+import { Container } from "@/components/Container";
+import { FeaturedStocks } from "@/components/FeaturedStocks";
+import { SpinLoader } from "@/components/SpinLoader";
+import { StockCard } from "@/components/StockCard";
+import { stockService } from "@/lib/StockService/stock-service";
+import { Suspense } from "react";
 
-const titleClasses = 'text-xs text-gray-400 font-semibold py-2 px-3';
-const linkClasses = clsx(
-  'flex items-center text-sm text-gray-500 font-medium py-2.5 px-3 rounded-lg gap-2',
-  'hover:text-green-600 transition',
-);
 
 export default function Home() {
+
   return (
-    <div className='flex'>
-      <div></div>
-    </div>
+    <Container>
+      <Suspense fallback={<SpinLoader/>}>
+        <FeaturedStocks seeAllLink="/stock" lineItems={2} maxItems={4} />
+      </Suspense>
+    </Container>
   );
 }

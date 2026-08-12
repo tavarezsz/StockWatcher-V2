@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { SideMenu } from '@/components/SideMenu';
+import { TopMenu } from '@/components/TopMenu';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -20,11 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-BR'>
-      <body className={`${inter.variable} flex`}>
-        <div>
+      <body className={`${inter.variable} flex min-h-screen`}>
+        <div className='shrink-0'>
           <SideMenu />
         </div>
-        <div>{children}</div>
+        <div className='flex min-w-0 flex-1 flex-col'>
+          <TopMenu />
+          <main className='flex-1'>{children}</main>
+        </div>
       </body>
     </html>
   );

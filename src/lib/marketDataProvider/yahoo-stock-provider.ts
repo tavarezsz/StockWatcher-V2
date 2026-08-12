@@ -82,8 +82,6 @@ export class yahooStockProvider implements MarketDataProvider {
 
     const filteredResult = results?.quotes.filter((res) => this.acceptedExchangeLocations.includes(res.exchDisp as string))
 
-    console.log("filtered ", filteredResult)
-
     if (filteredResult.length === 0) {
       return [];
     }
@@ -101,9 +99,6 @@ export class yahooStockProvider implements MarketDataProvider {
 
     try {
       const stocksInfo = await this.findBySymbolList(quoteSymbols);
-
-      console.log("Stock raw: ", stocksInfo)
-
       //Cria um Map de Símbolo | Preço para busca rápida O(1)
       const priceMap = new Map<string, number>(
         stocksInfo.map((stock) => [stock.symbol, stock.price]),

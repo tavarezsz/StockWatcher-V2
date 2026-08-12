@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link';
 import clsx from 'clsx';
 import {
@@ -19,14 +20,14 @@ const loggedUser = 'ANONIMO';
 
 export function SideMenu() {
   return (
-    <div className='flex flex-col border-r border-border h-[100vw]'>
+    <div className='flex flex-col border-r border-border min-h-screen'>
       <Link
         href='/'
-        className='text-xl font-bold text-primary p-6 border-b  border-t border-border'
+        className='text-xl font-bold text-primary p-6 border-b  border-t border-border h-[78px]'
       >
         StockWatcher
       </Link>
-      <div className='bg-red-400 h-100'>
+      <div className='flex flex-1 flex-col'>
         <div className='flex items-center gap-2 rounded-lg text-sm text-gray-600 m-5 p-3 border-border bg-background-sec'>
           <SearchIcon size={16} />
           <p>Bucar ativo...</p>
@@ -54,7 +55,7 @@ export function SideMenu() {
             </Link>
           </div>
         </div>
-        <div className='p-4 text-sm text-primary border-t border-border'>
+        <div className='mt-auto p-4 text-sm text-primary border-t border-border'>
           {loggedUser}
         </div>
       </div>
