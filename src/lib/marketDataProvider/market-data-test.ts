@@ -1,8 +1,8 @@
-import { marketDataProvider } from ".";
+import YahooFinance from 'yahoo-finance2';
+import { marketDataProvider } from '.';
 
-async function test() {
-  const result = await marketDataProvider.search("Multiplan")
-  console.log("Resultado ", result)
+async function getB3Volume() {
+ return await marketDataProvider.getIbovIndicators()
 }
 
-test();
+console.log(await getB3Volume());

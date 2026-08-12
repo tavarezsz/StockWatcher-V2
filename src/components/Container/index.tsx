@@ -4,7 +4,7 @@ type ContainerProps = {
 
 export function Container({children}: ContainerProps){
     return(
-        <div className="w-full h-full p-8 bg-background-sec">
+        <div className=" flex flex-col w-full h-full p-8 bg-background-sec gap-7">
             {children}
         </div>
     )

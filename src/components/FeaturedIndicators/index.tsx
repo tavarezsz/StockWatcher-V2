@@ -1,0 +1,119 @@
+import { getCurrentUsdPrice } from '@/lib/DolarApi/USD-Provider';
+import { marketIndicatorService } from '@/lib/marketIndicatorService/market-indicator-service';
+import { formatVariation } from '@/utils/formatters';
+import { DollarSignIcon } from 'lucide-react';
+import { ArrowUpIcon, ArrowDownIcon, ChartCandlestickIcon} from 'lucide-react';
+
+type NegociationVolumeProps = {
+  volume: string;
+};
+type MarketPointsProps = {
+  marketName: string;
+  marketPoints: number;
+  marketPointVariation: number;
+};
+
+const wrapperClasses =
+  'flex flex-col p-5 gap-3 bg-white w-full rounded-xl border border-border';
+export async function FeaturedIndicators() {
+  const indicator = await marketIndicatorService.getIbovIndicators();
+
+  return (
+    <div className='flex justify-around gap-5'>
+      <NegociationVolume volume={indicator.negociationVolume} />
+      <MarketPoints marketName={indicator.marketName} marketPoints={indicator.currentMarketPoints} marketPointVariation={indicator.marketPointsVariation} />
+      <DolarIndicator />
+    </div>
+  );
+}
+
+function NegociationVolume({ volume }: NegociationVolumeProps) {
+  return (
+    <div className={wrapperClasses}>
+      <span className='flex gap-2 items-center'>
+        <VolumeIcon />
+        <p className='text-sm text-gray-500'>Volume de Negociação</p>
+      </span>
+      <div className='flex flex-col gap-1'>
+        <p className='font-bold text-primary text-2xl'>{volume}</p>
+        <p className='text-xs text-muted'>Média diária · B3</p>
+      </div>
+    </div>
+  );
+}
+
+function MarketPoints({
+  marketName,
+  marketPoints,
+  marketPointVariation,
+}: MarketPointsProps) {
+  const variationPositive = marketPointVariation > 0;
+
+  const variation = formatVariation(marketPointVariation);
+
+  return (
+    <div className={wrapperClasses}>
+      <span className='flex gap-2 items-center'>
+        <ChartCandlestickIcon  size={16} color='#009472' />
+        <p className='text-sm text-gray-500'>{marketName}</p>
+      </span>
+      <div className='flex justify-between items-end'>
+        <p className='font-bold text-primary text-2xl'>{marketPoints} pts</p>
+        {variationPositive ? (
+          <span className='flex items-center bg-green-100 text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit '>
+            <ArrowUpIcon size={12} /> <p>{variation}%</p>
+          </span>
+        ) : (
+          <span className='flex items-center bg-red-100 text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit'>
+            <ArrowDownIcon size={12} /> <p>{variation}%</p>
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+async function DolarIndicator() {
+  const usdValue = await getCurrentUsdPrice();
+
+  const variationPositive = parseFloat(usdValue.lastDayVariation) > 0;
+
+  return (
+    <div className={wrapperClasses}>
+      <span className='flex gap-2 items-center'>
+        <DollarSignIcon size={16} color='#009472' />
+        <p className='text-sm text-gray-500'>Dólar comercial</p>
+      </span>
+      <div className='flex justify-between items-end'>
+        <p className='font-bold text-primary text-2xl'>{usdValue.price}</p>
+        {variationPositive ? (
+          <span className='flex items-center bg-green-100 text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit '>
+            <ArrowUpIcon size={12} /> <p>{usdValue.lastDayVariation}%</p>
+          </span>
+        ) : (
+          <span className='flex items-center bg-red-100 text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit'>
+            <ArrowDownIcon size={12} /> <p>{usdValue.lastDayVariation}%</p>
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const VolumeIcon = () => {
+  return (
+    <svg
+      width='16'
+      height='16'
+      viewBox='0 0 16 16'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        d='M14.7094 0.29375C14.8031 0.390625 14.875 0.5 14.925 0.615625C14.975 0.73125 15 0.859375 15 0.996875V1V4C15 4.55312 14.5531 5 14 5C13.4469 5 13 4.55312 13 4V3.41563L9.70625 6.70625C9.3375 7.075 8.74375 7.1 8.34688 6.75938L5.5 4.31563L2.65 6.75938C2.23125 7.11875 1.6 7.06875 1.24063 6.65C0.88125 6.23125 0.93125 5.6 1.35 5.24062L4.85 2.24062C5.225 1.91875 5.77812 1.91875 6.15312 2.24062L8.95 4.6375L11.5844 2H11C10.4469 2 10 1.55313 10 1C10 0.446875 10.4469 0 11 0H14C14.275 0 14.525 0.1125 14.7063 0.290625L14.7094 0.29375ZM0 9.5C0 8.67188 0.671875 8 1.5 8H14.5C15.3281 8 16 8.67188 16 9.5V14.5C16 15.3281 15.3281 16 14.5 16H1.5C0.671875 16 0 15.3281 0 14.5V9.5ZM1.5 13V14.5H3C3 13.6719 2.32812 13 1.5 13ZM3 9.5H1.5V11C2.32812 11 3 10.3281 3 9.5ZM14.5 13C13.6719 13 13 13.6719 13 14.5H14.5V13ZM13 9.5C13 10.3281 13.6719 11 14.5 11V9.5H13ZM10 12C10 10.8962 9.10383 10 8 10C6.89617 10 6 10.8962 6 12C6 13.1038 6.89617 14 8 14C9.10383 14 10 13.1038 10 12Z'
+        fill='#009472'
+      />
+    </svg>
+  );
+};
+
