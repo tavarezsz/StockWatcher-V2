@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { SideMenu } from '@/components/SideMenu';
 import { TopMenu } from '@/components/TopMenu';
+import { ToastifyContainer } from '@/components/ToastifyContainer';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -10,7 +11,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'StockWatcher',
+  title: {
+    default: "StockWtacher",
+    template: ' %s | StockWatcher'
+  },
   description: 'Seu novo app de controle de ações!',
 };
 
@@ -29,6 +33,7 @@ export default function RootLayout({
           <TopMenu />
           <main className='flex-1'>{children}</main>
         </div>
+        <ToastifyContainer/>
       </body>
     </html>
   );

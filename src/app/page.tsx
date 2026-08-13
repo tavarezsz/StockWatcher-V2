@@ -1,6 +1,7 @@
 import { Container } from '@/components/Container';
 import { FeaturedIndicators } from '@/components/FeaturedIndicators';
 import { FeaturedStocks } from '@/components/FeaturedStocks';
+import { RecentAlerts } from '@/components/RecentAlerts';
 import { SpinLoader } from '@/components/SpinLoader';
 import { StockCard } from '@/components/StockCard';
 import { WalletSummary } from '@/components/WalletSummary';
@@ -17,6 +18,7 @@ export default function Home() {
       <Suspense fallback={<SpinLoader />}>
         <FeaturedStocks seeAllLink='/stock' lineItems={2} maxItems={4} />
       </Suspense>
+      <RecentAlerts/>
     </Container>
   );
 }

@@ -9,6 +9,17 @@ import { cacheLife, cacheTag, updateTag, revalidateTag } from "next/cache";
 import { StockModel } from "@/models/stock-model";
 import { stockService } from "../StockService/stock-service";
 
+async function getUserAlertsCachedInternal(userId: string): Promise<AlertModel[]> {
+    "use cache";
+
+    cacheLife("minutes");
+    cacheTag(`alerts:${userId}`);
+
+    const alerts = await alertService.getUserAlerts(userId);
+    alerts.forEach((a) => cacheTag(`alerts:${userId}`));
+    return alerts;
+  }
+
 export class AlertService {
   //valor usado como margen de erro, pra o alerta não considerar um valor exato somente
   private tolerance = parseInt(
@@ -87,10 +98,10 @@ export class AlertService {
     };
   }
 
-  async deleteAlert(userId: string, alert: AlertModel) {
-    if (!alert.id) throw new Error("Alerta não encontrado");
+  async deleteAlert(userId: string, alertId: string) {
+    if (!alertId) throw new Error("Alerta não encontrado");
 
-    const alertData = await alertRespository.findById(alert.id);
+    const alertData = await alertRespository.findById(alertId);
 
     if (!alertData || alertData.userId !== userId)
       throw new Error("Alerta não encontrado");
@@ -115,14 +126,7 @@ export class AlertService {
   }
 
   async getUserAlertsCached(userId: string): Promise<AlertModel[]> {
-    "use cache";
-
-    cacheLife("minutes");
-    cacheTag(`alerts:${userId}`);
-
-    const alerts = await this.getUserAlerts(userId);
-    alerts.forEach((a) => cacheTag(`alert:${a.id}`));
-    return alerts;
+    return await getUserAlertsCachedInternal(userId)
   }
 
   async checkAllAlerts(): Promise<{ checked: number; triggered: number }> {
