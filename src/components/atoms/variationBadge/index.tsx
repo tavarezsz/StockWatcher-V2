@@ -27,11 +27,11 @@ export function VariationBadge({variationType = "Percent", variation, background
     return(
         <>
          {isVariationPositive ? (
-          <span className={`flex items-center ${background && 'bg-green-100'} text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold`}>
+          <span className={`flex items-center ${background && 'bg-green-100'} text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold `}>
             {decorator} <p>{cleanVariation}{isPercent && "%"} {aditionalText && aditionalText}</p>
           </span>
         ) : (
-          <span className={`flex items-center ${background && 'bg-red-100'} text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold`}>
+          <span className={`flex items-center ${background && 'bg-red-100'} text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold `}>
             {decorator} <p>{cleanVariation}{isPercent && "%"} {aditionalText && aditionalText}</p>
           </span>
         )}

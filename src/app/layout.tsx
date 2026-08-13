@@ -4,6 +4,7 @@ import './globals.css';
 import { SideMenu } from '@/components/SideMenu';
 import { TopMenu } from '@/components/TopMenu';
 import { ToastifyContainer } from '@/components/ToastifyContainer';
+import { Suspense } from 'react';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -12,8 +13,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "StockWtacher",
-    template: ' %s | StockWatcher'
+    default: 'StockWtacher',
+    template: ' %s | StockWatcher',
   },
   description: 'Seu novo app de controle de ações!',
 };
@@ -30,10 +31,12 @@ export default function RootLayout({
           <SideMenu />
         </div>
         <div className='flex min-w-0 flex-1 flex-col'>
-          <TopMenu />
+          <Suspense>
+            <TopMenu />
+          </Suspense>
           <main className='flex-1'>{children}</main>
         </div>
-        <ToastifyContainer/>
+        <ToastifyContainer />
       </body>
     </html>
   );

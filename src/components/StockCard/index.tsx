@@ -28,7 +28,7 @@ export function StockCard({ stock }: StockCardProps) {
           </div>
         </div>
         <div>
-          <VariationBadge variation={stock.changePercentDay} variationType='Absolute'/>
+          <VariationBadge variation={stock.changePercentDay}/>
         </div>
       </div>
 
