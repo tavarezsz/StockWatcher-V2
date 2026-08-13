@@ -3,7 +3,7 @@ import { cacheLife } from 'next/cache';
 
 type DolarPrice = {
   price: string;
-  lastDayVariation: string;
+  lastDayVariation: number;
 };
 
 export async function getCurrentUsdPrice(): Promise<DolarPrice> {
@@ -21,7 +21,7 @@ export async function getCurrentUsdPrice(): Promise<DolarPrice> {
 
   return{
     price: formatPrice(price),
-    lastDayVariation: formatVariation(lastDayVariation)
+    lastDayVariation: lastDayVariation
   }
 }
 

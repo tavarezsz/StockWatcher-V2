@@ -11,7 +11,7 @@ const variationFormatter = new Intl.NumberFormat('pt-BR', {
 });
 
 export function formatPrice(value: number) {
-  return currencyFormatter.format(value);
+  return currencyFormatter.format(Math.abs(value));
 }
 
 export function formatVariation(value: number) {

@@ -2,6 +2,7 @@ import { StockModel } from '@/models/stock-model';
 import { formatPrice, formatVariation } from '@/utils/formatters';
 import { getStockInitials } from '@/utils/getStockInitials';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
+import { VariationBadge } from '../atoms/variationBadge';
 import Link from 'next/link';
 
 type StockCardProps = {
@@ -9,9 +10,7 @@ type StockCardProps = {
 };
 
 export function StockCard({ stock }: StockCardProps) {
-  const variationPositive = stock.changePercentDay > 0;
 
-  const variation = formatVariation(stock.changePercentDay);
   const price = formatPrice(stock.price);
   const initials = getStockInitials(stock.name)
 
@@ -28,15 +27,9 @@ export function StockCard({ stock }: StockCardProps) {
             <p className='text-sm text-muted truncate'>{stock.name}</p>
           </div>
         </div>
-        {variationPositive ? (
-          <span className='flex items-center bg-green-100 text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold absolute right-4'>
-            <ArrowUpIcon size={12} /> <p>{variation}%</p>
-          </span>
-        ) : (
-          <span className='flex items-center bg-red-100 text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold absolute right-4'>
-            <ArrowDownIcon size={12} /> <p>{variation}%</p>
-          </span>
-        )}
+        <div>
+          <VariationBadge variation={stock.changePercentDay} variationType='Absolute'/>
+        </div>
       </div>
 
       <div>

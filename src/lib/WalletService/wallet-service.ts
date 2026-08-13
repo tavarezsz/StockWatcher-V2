@@ -6,6 +6,17 @@ import { cacheTag, cacheLife, updateTag } from "next/cache";
 import util from "node:util";
 import { StockModel } from "@/models/stock-model";
 
+async function getWalletCachedInternal(userId: string): Promise<WalletModel> {
+    "use cache";
+
+    cacheLife("minutes"); //revalida wallet mais ou menos a cada 5 min
+    cacheTag(`wallet:${userId}`);
+
+    const wallet = await walletService.getWallet(userId);
+    wallet.stocks?.forEach((s) => cacheTag(`stock:${s.stock.symbol}`));
+    return wallet;
+  }
+
 export class WalletService {
   //Cruza os dados do repositorio de wallet e stocks pra gerar a wallet do usuário atual
   //O objeto walletModel não tem persistencia em banco pois ele vai mudar a cada atualização de preço, fica no cache do next
@@ -49,14 +60,7 @@ export class WalletService {
   }
 
   async getWalletCached(userId: string): Promise<WalletModel> {
-    "use cache";
-
-    cacheLife("minutes"); //revalida wallet mais ou menos a cada 5 min
-    cacheTag(`wallet:${userId}`);
-
-    const wallet = await this.getWallet(userId);
-    wallet.stocks?.forEach((s) => cacheTag(`stock:${s.stock.symbol}`));
-    return wallet;
+    return getWalletCachedInternal(userId)
   }
 
   async addAsset(
@@ -126,3 +130,5 @@ export class WalletService {
     }
   }
 }
+
+export const walletService = new WalletService()

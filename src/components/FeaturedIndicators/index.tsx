@@ -3,6 +3,7 @@ import { marketIndicatorService } from '@/lib/marketIndicatorService/market-indi
 import { formatVariation } from '@/utils/formatters';
 import { DollarSignIcon } from 'lucide-react';
 import { ArrowUpIcon, ArrowDownIcon, ChartCandlestickIcon} from 'lucide-react';
+import { VariationBadge } from '../atoms/variationBadge';
 
 type NegociationVolumeProps = {
   volume: string;
@@ -47,9 +48,6 @@ function MarketPoints({
   marketPoints,
   marketPointVariation,
 }: MarketPointsProps) {
-  const variationPositive = marketPointVariation > 0;
-
-  const variation = formatVariation(marketPointVariation);
 
   return (
     <div className={wrapperClasses}>
@@ -59,15 +57,7 @@ function MarketPoints({
       </span>
       <div className='flex justify-between items-end'>
         <p className='font-bold text-primary text-2xl'>{marketPoints} pts</p>
-        {variationPositive ? (
-          <span className='flex items-center bg-green-100 text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit '>
-            <ArrowUpIcon size={12} /> <p>{variation}%</p>
-          </span>
-        ) : (
-          <span className='flex items-center bg-red-100 text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit'>
-            <ArrowDownIcon size={12} /> <p>{variation}%</p>
-          </span>
-        )}
+        <VariationBadge variation={marketPointVariation}/>
       </div>
     </div>
   );
@@ -76,7 +66,6 @@ function MarketPoints({
 async function DolarIndicator() {
   const usdValue = await getCurrentUsdPrice();
 
-  const variationPositive = parseFloat(usdValue.lastDayVariation) > 0;
 
   return (
     <div className={wrapperClasses}>
@@ -86,15 +75,8 @@ async function DolarIndicator() {
       </span>
       <div className='flex justify-between items-end'>
         <p className='font-bold text-primary text-2xl'>{usdValue.price}</p>
-        {variationPositive ? (
-          <span className='flex items-center bg-green-100 text-green-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit '>
-            <ArrowUpIcon size={12} /> <p>{usdValue.lastDayVariation}%</p>
-          </span>
-        ) : (
-          <span className='flex items-center bg-red-100 text-red-600 rounded-sm py-0.5 px-2 text-xs gap-1 font-semibold h-fit'>
-            <ArrowDownIcon size={12} /> <p>{usdValue.lastDayVariation}%</p>
-          </span>
-        )}
+        <VariationBadge variation={usdValue.lastDayVariation}/>
+
       </div>
     </div>
   );
