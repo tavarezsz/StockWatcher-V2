@@ -1,5 +1,6 @@
 import { Container } from '@/components/Container';
 import { SpinLoader } from '@/components/SpinLoader';
+import { AlertForm } from '@/components/StockPage/AlertForm';
 import { InfoSection } from '@/components/StockPage/InfoSection';
 import { stockService } from '@/lib/StockService/stock-service';
 import { Metadata } from 'next';
@@ -24,11 +25,22 @@ export async function generateMetadata({
 export default function StockPage({ params }: StockPageProps) {
   return (
     <Container>
-      <Suspense fallback={<SpinLoader />}>
-        {params.then(({ symbol }) => (
-          <InfoSection symbol={symbol} />
-        ))}
-      </Suspense>
+      <div className='flex gap-8'>
+        <div className='flex flex-col w-3/5'>
+          <Suspense fallback={<SpinLoader />}>
+            {params.then(({ symbol }) => (
+              <InfoSection symbol={symbol} />
+            ))}
+          </Suspense>
+        </div>
+        <div className='flex flex-col w-2/5'>
+          <Suspense fallback={<SpinLoader />}>
+            {params.then(({ symbol }) => (
+              <AlertForm symbol={symbol} />
+            ))}
+          </Suspense>
+        </div>
+      </div>
     </Container>
   );
 }
