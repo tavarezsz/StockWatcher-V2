@@ -31,15 +31,12 @@ export function TopMenu(){
 
     const isStockPage = pathname.startsWith("/stock/")
 
+    if (isStockPage) return null
+
     return(
         <div className="flex h-[78px] border-b border-border w-full items-center justify-between px-8 py-6">
             <div className="flex items-center gap-2 ">
                {currentIcon && currentIcon} <p className="text-sm font-semibold text-primary"> {currentItem?.label ?? "Página não encontrada"} </p>  { currentLabel && <span className="flex items-center text-gray-500 text-sm gap-2"> <ChevronRightIcon size={14}/> <p>{currentLabel}</p></span>}
-            </div>
-            <div className="flex gap-3">
-                <button className="flex items-center py-2 px-3 bg-green-600 rounded-lg text-white gap-2 cursor-pointer">
-                    <PlusIcon size={16}/> <p className="text-sm">Adicionar Ativo</p>
-                </button>
             </div>
         </div>
     )

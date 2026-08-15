@@ -7,6 +7,12 @@ export type StockInstance = {
     referencePrice: number;
 }
 
+export type StockInstanceDTO = {
+    stockSymbol: string,
+    quantity: number
+    referencePrice: number
+}
+
 export type WalletModel = {
     stocks?: StockInstance[]
     totalValue: number

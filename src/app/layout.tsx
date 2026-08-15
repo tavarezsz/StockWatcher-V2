@@ -34,7 +34,7 @@ export default function RootLayout({
           <Suspense>
             <TopMenu />
           </Suspense>
-          <main className='flex-1'>{children}</main>
+          <main className='flex-1 bg-background-sec'>{children}</main>
         </div>
         <ToastifyContainer />
       </body>
