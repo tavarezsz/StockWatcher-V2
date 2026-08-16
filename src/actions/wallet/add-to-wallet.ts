@@ -32,33 +32,40 @@ export async function AddToWalletAction(
     referencePrice: formData.get('referencePrice'),
   });
 
-  if(!result.success){
-    return{
-        formState: prevState.formState,
-        errors: result.error.issues.map(issue => issue.message),
-    }
+  if (!result.success) {
+    return {
+      formState: prevState.formState,
+      errors: result.error.issues.map(issue => issue.message),
+    };
   }
 
-  try{
-    const stock = await walletService.addAsset(userId, result.data.stockSymbol, result.data.quantity, result.data.referencePrice)
+  try {
+    const stock = await walletService.addAsset(
+      userId,
+      result.data.stockSymbol,
+      result.data.quantity,
+      result.data.referencePrice,
+    );
 
     const submittedFormState: StockInstanceDTO = {
-        ...prevState.formState,
-        ...result.data,
-      };
+      ...prevState.formState,
+      ...result.data,
+    };
 
-    return{
+    if (stock) {
+      return {
         formState: submittedFormState,
         errors: [],
-        sucess: true
+        sucess: true,
+      };
     }
-  } catch(err){
+  } catch (err) {
     return {
-    formState: prevState.formState,
-    errors: [
-          err instanceof Error ? err.message : 'Erro ao criar alerta',
-        ]
-  };
+      formState: prevState.formState,
+      errors: [
+        err instanceof Error ? err.message : 'Erro ao adicionar a carteira',
+      ],
+    };
   }
 
   return {

@@ -2,6 +2,7 @@ import { stockService } from '@/lib/StockService/stock-service';
 import { getStockInitials } from '@/utils/getStockInitials';
 import { BackButton } from './BackButton';
 import { PlusIcon } from 'lucide-react';
+import { AddToWalletButton } from './AddToWalletButton';
 
 type StockTopMenuProps = {
   symbol: string;
@@ -27,12 +28,9 @@ export async function StockTopMenu({ symbol }: StockTopMenuProps) {
             <p className='text-xs text-gray-500'>Ação listada na B3</p>
           </div>
         </div>
-
+      
         <div className='flex gap-3'>
-          <button className='flex items-center py-2 px-3 bg-green-600 rounded-lg text-white gap-2 cursor-pointer hover:bg-green-700'>
-            <PlusIcon size={16} />{' '}
-            <p className='text-sm'>Adicionar à Carteira</p>
-          </button>
+         <AddToWalletButton symbol={stock.symbol}/>
         </div>
       </div>
     </header>
