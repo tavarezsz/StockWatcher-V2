@@ -3,7 +3,7 @@
 import { createAlertAction } from '@/actions/alert/create-alert';
 import { InputCurrency } from '@/components/atoms/InputCurrency';
 import { InputSelect } from '@/components/atoms/InputSelect';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 type AlertFormProps = {
@@ -34,14 +34,19 @@ export function AlertForm({ symbol }: AlertFormProps) {
     errors: [],
   });
 
+  const handledState = useRef(state);
+
   useEffect(() => {
+    if (handledState.current === state) return;
+
+    handledState.current = state;
+
     if (state.errors.length > 0) {
       toast.dismiss();
       state.errors.forEach(error => toast.error(error));
+      return;
     }
-  }, [state.errors]);
 
-  useEffect(() => {
     if (state.sucess) {
       toast.dismiss();
       toast.success('Alerta criado com sucesso');

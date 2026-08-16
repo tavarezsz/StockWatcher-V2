@@ -42,9 +42,11 @@ export class AlertService {
     const currentValue = isVariationDay ? stock.changePercentDay : stock.price;
 
     if (isVariationDay) {
+      const variationTarget = Math.abs(alert.targetValue);
+
       return alert.targetCondition === "above"
-        ? currentValue >= alert.targetValue
-        : currentValue < alert.targetValue;
+        ? currentValue >= variationTarget
+        : currentValue <= -variationTarget;
     }
 
     const margin = strict ? 0 : (alert.targetValue * this.tolerance) / 100;

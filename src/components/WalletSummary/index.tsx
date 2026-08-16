@@ -24,7 +24,7 @@ export async function WalletSummary() {
         </p>
         <div className='flex items-end gap-3'>
           <p className='text-primary text-4xl font-bold'>{totalValue}</p>
-          <VariationBadge variation={wallet.totalProfitPercent} aditionalText='hoje'/>
+          <VariationBadge variation={wallet.dayProfitPercent} aditionalText='hoje'/>
         </div>
       </div>
       <WalletHighlights stocks={wallet.stocks ?? []} />

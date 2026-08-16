@@ -38,10 +38,10 @@ export function SideMenu() {
             <Link href='/' className={linkClasses}>
               <LayoutDashboardIcon size={16} /> <p>Painel Geral</p>
             </Link>
-            <Link href='/' className={linkClasses}>
+            <Link href='/wallet' className={linkClasses}>
               <ChartPieIcon size={16} /> <p> Minha Carteira</p>
             </Link>
-            <Link href='/' className={linkClasses}>
+            <Link href='/alerts' className={linkClasses}>
               <BellIcon size={16} /> <p> Configurar Alertas</p>
             </Link>
           </div>

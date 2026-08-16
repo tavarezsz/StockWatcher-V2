@@ -1,10 +1,8 @@
-import { WalletModel } from "@/models/wallet-model";
+import { WalletAssetDistribution, WalletModel } from "@/models/wallet-model";
 import { stockRepository } from "@/repositories/stock";
 import { walletItemRepository } from "@/repositories/wallet";
 import { StockInstance } from "@/models/wallet-model";
 import { cacheTag, cacheLife, updateTag } from "next/cache";
-import util from "node:util";
-import { StockModel } from "@/models/stock-model";
 
 async function getWalletCachedInternal(userId: string): Promise<WalletModel> {
     "use cache";
@@ -49,12 +47,48 @@ export class WalletService {
     const totalProfitPercent =
       totalInvested > 0 ? (totalProfitLoss / totalInvested) * 100 : 0;
 
+    const openingValue = stockInstances.reduce(
+      (sum, item) => sum + item.stock.openPrice * item.quantity,
+      0,
+    );
+
+    const dayProfitLoss = stockInstances.reduce(
+      (sum, item) =>
+        sum + (item.stock.price - item.stock.openPrice) * item.quantity,
+      0,
+    );
+
+    const dayProfitPercent =
+      openingValue > 0 ? (dayProfitLoss / openingValue) * 100 : 0;
+
+    const positionValues = stockInstances.reduce((positions, item) => {
+      const positionValue = item.stock.price * item.quantity;
+      const currentValue = positions.get(item.stock.symbol) ?? 0;
+
+      positions.set(item.stock.symbol, currentValue + positionValue);
+      return positions;
+    }, new Map<string, number>());
+
+    const assetDistribution: WalletAssetDistribution[] = [
+      ...positionValues.entries(),
+    ]
+      .map(([symbol, currentValue]) => ({
+        symbol,
+        currentValue,
+        percentage: totalValue > 0 ? (currentValue / totalValue) * 100 : 0,
+      }))
+      .sort((first, second) => second.currentValue - first.currentValue);
+
     return {
       stocks: stockInstances,
       totalValue,
+      totalInvested,
       totalProfitLoss,
       totalProfitPercent,
-      assetsQuantity: stockInstances.length,
+      dayProfitLoss,
+      dayProfitPercent,
+      assetsQuantity: assetDistribution.length,
+      assetDistribution,
       updatedAt: new Date(),
     };
   }
@@ -83,9 +117,9 @@ export class WalletService {
     };
   }
 
-  async removeAsset(userId: string, asset: StockInstance) {
+  async removeAsset(userId: string, assetId: string) {
     const wallet = await this.getWallet(userId);
-    const match = wallet.stocks?.find((s) => s.itemId === asset.itemId);
+    const match = wallet.stocks?.find((s) => s.itemId === assetId);
 
     if (!match) throw new Error("Item não encontrado");
 
@@ -109,20 +143,18 @@ export class WalletService {
     quantity?: number,
     referencePrice?: number,
   ) {
-    let item = await walletItemRepository.findById(stockId);
+    const item = await walletItemRepository.findById(stockId);
 
     if (!item || item.userId !== userId) throw new Error("Item não encontrado");
 
-    if(quantity){
-      item.quantity = quantity
-    }
-    if(referencePrice){
-      item.referencePrice = referencePrice
-    }
+    const changes = {
+      ...(quantity !== undefined && { quantity }),
+      ...(referencePrice !== undefined && { referencePrice }),
+    };
 
-    const newItem = await walletItemRepository.update(stockId, item);
+    const updatedItem = await walletItemRepository.update(stockId, changes);
 
-    if(newItem){
+    if(updatedItem){
       updateTag(`wallet:${userId}`);
       return{
         success: true

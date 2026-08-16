@@ -45,9 +45,7 @@ export class PrismaWalletItemRepository implements WalleItemRepository {
   ): Promise<WalletItem> {
     const item = await db.walletItem.update({
       where: { id },
-      data: {
-        newItem,
-      },
+      data: newItem,
     });
 
     if (!item) {

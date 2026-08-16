@@ -13,11 +13,21 @@ export type StockInstanceDTO = {
     referencePrice: number
 }
 
+export type WalletAssetDistribution = {
+    symbol: string
+    currentValue: number
+    percentage: number
+}
+
 export type WalletModel = {
     stocks?: StockInstance[]
     totalValue: number
+    totalInvested: number
     totalProfitLoss: number
     totalProfitPercent: number
+    dayProfitLoss: number
+    dayProfitPercent: number
     assetsQuantity: number
+    assetDistribution: WalletAssetDistribution[]
     updatedAt: Date | undefined 
 }
