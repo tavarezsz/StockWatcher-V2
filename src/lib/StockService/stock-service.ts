@@ -3,6 +3,11 @@ import { stockRepository } from "@/repositories/stock";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { marketDataProvider } from "../marketDataProvider";
 
+export type RefreshQuotesResponse = {
+  updated: number;
+  errors: number;
+};
+
 async function getStockCachedInternal(symbol: string): Promise<StockModel> {
   "use cache";
 
@@ -89,6 +94,65 @@ class StockService {
 
     revalidateTag(`stock:${symbol}`, "max");
     return updatedStock;
+  }
+
+  async refreshAllQuotesFromCron(): Promise<RefreshQuotesResponse> {
+    const allStocks = await stockRepository.findAll();
+
+    const allStockSymbols = [
+      ...new Set(allStocks.map((stock) => stock.symbol)),
+    ];
+
+    if (allStockSymbols.length === 0) {
+      return { updated: 0, errors: 0 };
+    }
+
+    let freshStocks: StockModel[];
+
+    try {
+      freshStocks =
+        await marketDataProvider.findBySymbolList(allStockSymbols);
+    } catch (error) {
+      console.error("Erro ao atualizar cotações no provider", error);
+
+      return { updated: 0, errors: allStockSymbols.length };
+    }
+
+    const requestedSymbols = new Set(allStockSymbols);
+    const freshStocksBySymbol = new Map(
+      freshStocks
+        .filter((stock) => requestedSymbols.has(stock.symbol))
+        .map((stock) => [stock.symbol, stock]),
+    );
+    const uniqueFreshStocks = [...freshStocksBySymbol.values()];
+    const missingStocks = allStockSymbols.filter(
+      (symbol) => !freshStocksBySymbol.has(symbol),
+    ).length;
+
+    const updateResults = await Promise.allSettled(
+      uniqueFreshStocks.map(async (stock) => {
+        const updatedStock = await stockRepository.createOrUpdate(stock);
+        revalidateTag(`stock:${stock.symbol}`, "max");
+        return updatedStock;
+      }),
+    );
+
+    const updated = updateResults.filter(
+      (result) => result.status === "fulfilled",
+    ).length;
+    const updateErrors = updateResults.length - updated;
+
+    updateResults.forEach((result, index) => {
+      if (result.status === "rejected") {
+        const stock = uniqueFreshStocks[index];
+        console.error(`Erro ao atualizar ${stock.symbol}`, result.reason);
+      }
+    });
+
+    return {
+      updated,
+      errors: missingStocks + updateErrors,
+    };
   }
 
   // Procura primeiro no banco por uma stock já mapeada; se não encontrar,

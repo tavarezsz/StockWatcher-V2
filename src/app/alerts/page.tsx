@@ -1,4 +1,5 @@
 import { AlertInfo } from "@/components/AlertPage/AlertInfo";
+import { AlertList } from "@/components/AlertPage/AlertList";
 import { Container } from "@/components/Container";
 import { SpinLoader } from "@/components/SpinLoader";
 import { Metadata } from "next";
@@ -16,6 +17,9 @@ export default function AlertPage(){
         <Container>
             <Suspense fallback={<SpinLoader/>}>
                 <AlertInfo/>
+            </Suspense>
+            <Suspense fallback={<SpinLoader/>}>
+                <AlertList/>
             </Suspense>
         </Container>
     )

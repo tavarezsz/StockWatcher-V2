@@ -10,7 +10,7 @@ async function seed(){
     console.log("response ", user)
 }
 
-//seed()
+seed()
 
 
 

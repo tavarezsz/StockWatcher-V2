@@ -26,6 +26,7 @@ export class AlertService {
     process.env.ACCEPTED_TOLERANCE_PERCENT || "2",
     10,
   );
+  private readonly quoteRefreshIntervalMs = 10 * 60 * 1000;
 
   async alertValid(
     alert: AlertModel,
@@ -141,13 +142,31 @@ export class AlertService {
     //deduplicação de todas as stocks
     const uniqueSymbols = [...new Set(activeAlerts.map((a) => a.stockSymbol))];
 
-    //atualiza as cotações necessárias
+    const persistedStocks =
+      await stockRepository.findManyBySymbol(uniqueSymbols);
+    const persistedStocksBySymbol = new Map(
+      persistedStocks.map((stock) => [stock.symbol, stock]),
+    );
+    const now = Date.now();
+    const staleSymbols = uniqueSymbols.filter((symbol) => {
+      const stock = persistedStocksBySymbol.get(symbol);
+
+      return (
+        !stock?.lastChange ||
+        now - stock.lastChange.getTime() >= this.quoteRefreshIntervalMs
+      );
+    });
+
+    // Atualiza somente cotações ausentes ou com mais de 10 minutos.
     await Promise.all(
-      uniqueSymbols.map((symbol) => stockService.refreshQuoteFromCron(symbol)),
+      staleSymbols.map((symbol) => stockService.refreshQuoteFromCron(symbol)),
     );
 
-    //busca os stocks atualizados de uma vez
-    const stocks = await stockRepository.findManyBySymbol(uniqueSymbols);
+    // Se houve atualização, busca novamente para usar os valores mais recentes.
+    const stocks =
+      staleSymbols.length > 0
+        ? await stockRepository.findManyBySymbol(uniqueSymbols)
+        : persistedStocks;
     const stockMap = new Map(stocks.map((s) => [s.symbol, s]));
 
     let triggeredCount = 0;

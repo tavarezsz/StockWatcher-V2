@@ -20,6 +20,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-toastify": "^11.1.0",
+    "web-push": "^3.6.7",
     "yahoo-finance2": "^4.0.0",
     "zod": "^4.4.3"
   },
@@ -29,6 +30,7 @@
     "@types/pg": "^8.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "prisma": "^7.9.1",
