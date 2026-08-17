@@ -8,6 +8,7 @@ import { stockRepository } from "@/repositories/stock";
 import { cacheLife, cacheTag, updateTag, revalidateTag } from "next/cache";
 import { StockModel } from "@/models/stock-model";
 import { stockService } from "../StockService/stock-service";
+import { webPushService } from "../WebPushService";
 
 async function getUserAlertsCachedInternal(userId: string): Promise<AlertModel[]> {
     "use cache";
@@ -22,11 +23,18 @@ async function getUserAlertsCachedInternal(userId: string): Promise<AlertModel[]
 
 export class AlertService {
   //valor usado como margen de erro, pra o alerta não considerar um valor exato somente
-  private tolerance = parseInt(
-    process.env.ACCEPTED_TOLERANCE_PERCENT || "2",
-    10,
-  );
+  private readonly tolerance = this.getTolerance();
   private readonly quoteRefreshIntervalMs = 10 * 60 * 1000;
+
+  private getTolerance(): number {
+    const configuredTolerance = Number(
+      process.env.ACCEPTED_TOLERANCE_PERCENT ?? "2",
+    );
+
+    return Number.isFinite(configuredTolerance) && configuredTolerance >= 0
+      ? configuredTolerance
+      : 2;
+  }
 
   async alertValid(
     alert: AlertModel,
@@ -171,6 +179,7 @@ export class AlertService {
 
     let triggeredCount = 0;
     const affectedUserIds = new Set<string>();
+    const pushNotifications: Promise<void>[] = [];
     for (const alert of activeAlerts) {
       const stock = stockMap.get(alert.stockSymbol);
       if (!stock) continue;
@@ -181,13 +190,41 @@ export class AlertService {
         await alertRespository.markAsTriggered(alert.id!);
         triggeredCount++;
         affectedUserIds.add(alert.userId);
+        /*
+         * Push é best effort: o alerta já foi disparado e uma falha de rede
+         * não deve interromper a checagem dos outros alertas.
+         */
+        pushNotifications.push(
+          webPushService
+            .sendTriggeredAlert({
+              userId: alert.userId,
+              alertId: alert.id,
+              symbol: stock.symbol,
+              targetValueType: alert.targetValueType,
+              currentPrice: stock.price,
+              currentVariation: stock.changePercentDay,
+            })
+            .then((result) => {
+              if (result.errors > 0) {
+                console.warn(
+                  `Push do alerta ${alert.id}: ${result.sent} enviados, ${result.errors} erros e ${result.removed} removidos`,
+                );
+              }
+            })
+            .catch((error) => {
+              console.error(`Erro no push do alerta ${alert.id}`, error);
+            }),
+        );
         // TODO: disparar email via Resend aqui
       }
     }
-  // invalida o cache de alertas só dos usuários que realmente tiveram algo disparado
-  affectedUserIds.forEach((userId) => revalidateTag(`alerts:${userId}`, "max"));
+    await Promise.all(pushNotifications);
+    // invalida o cache de alertas só dos usuários que realmente tiveram algo disparado
+    affectedUserIds.forEach((userId) =>
+      revalidateTag(`alerts:${userId}`, "max"),
+    );
 
-  return { checked: activeAlerts.length, triggered: triggeredCount };
+    return { checked: activeAlerts.length, triggered: triggeredCount };
   }
 }
 

@@ -9,6 +9,7 @@ import {
   CircleQuestionMarkIcon,
   SearchIcon,
 } from 'lucide-react';
+import { PushNotificationButton } from '@/components/PushNotificationButton';
 
 const titleClasses = 'text-xs text-gray-400 font-semibold py-2 px-3';
 const linkClasses = clsx(
@@ -55,8 +56,13 @@ export function SideMenu() {
             </Link>
           </div>
         </div>
-        <div className='mt-auto p-4 text-sm text-primary border-t border-border'>
-          {loggedUser}
+        <div className='mt-auto'>
+          <div className='border-t border-border p-3'>
+            <PushNotificationButton />
+          </div>
+          <div className='border-t border-border p-4 text-sm text-primary'>
+            {loggedUser}
+          </div>
         </div>
       </div>
     </div>
