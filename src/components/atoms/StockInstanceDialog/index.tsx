@@ -108,12 +108,12 @@ export function StockInstanceDialog({
     <div
       className={clsx(
         'fixed inset-0 z-50 bg-black/50 backdrop-blur-xs',
-        'flex items-center justify-center p-6',
+        'flex items-center justify-center p-4 sm:p-6',
       )}
       onClick={handleClose}
     >
       <div
-        className='relative flex w-full max-w-lg flex-col gap-6 rounded-xl bg-white p-6 text-left shadow-lg shadow-black/30'
+        className='relative flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col gap-6 overflow-y-auto rounded-xl bg-white p-5 text-left shadow-lg shadow-black/30 sm:p-6'
         role='dialog'
         aria-modal='true'
         aria-labelledby={titleId}

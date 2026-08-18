@@ -1,8 +1,6 @@
 import { getCurrentUsdPrice } from '@/lib/DolarApi/USD-Provider';
 import { marketIndicatorService } from '@/lib/marketIndicatorService/market-indicator-service';
-import { formatVariation } from '@/utils/formatters';
-import { DollarSignIcon } from 'lucide-react';
-import { ArrowUpIcon, ArrowDownIcon, ChartCandlestickIcon} from 'lucide-react';
+import { ChartCandlestickIcon, DollarSignIcon } from 'lucide-react';
 import { VariationBadge } from '../atoms/variationBadge';
 
 type NegociationVolumeProps = {
@@ -15,16 +13,19 @@ type MarketPointsProps = {
 };
 
 const wrapperClasses =
-  'flex flex-col p-5 gap-3 bg-white w-full rounded-xl border border-border';
+  'flex min-w-[82%] snap-start flex-col gap-3 rounded-xl border border-border bg-white p-5 sm:min-w-[46%] lg:min-w-0 lg:w-full';
 export async function FeaturedIndicators() {
   const indicator = await marketIndicatorService.getIbovIndicators();
 
   return (
-    <div className='flex justify-around gap-5'>
+    <section
+      aria-label='Indicadores do mercado'
+      className='flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3  lg:justify-around lg:gap-5 lg:overflow-visible lg:pb-0'
+    >
       <NegociationVolume volume={indicator.negociationVolume} />
       <MarketPoints marketName={indicator.marketName} marketPoints={indicator.currentMarketPoints} marketPointVariation={indicator.marketPointsVariation} />
       <DolarIndicator />
-    </div>
+    </section>
   );
 }
 

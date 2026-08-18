@@ -9,13 +9,13 @@ import {
   BellIcon,
   CogIcon,
   CircleQuestionMarkIcon,
-  SearchIcon,
   LogOutIcon,
 } from 'lucide-react';
 import { PushNotificationButton } from '@/components/PushNotificationButton';
 import { createClient } from '@/lib/supabase/client';
 import { signOutAction } from '@/actions/auth/sign-out';
 import { unsubscribeFromPushAction } from '@/actions/push/unsubscribe-push';
+import { StockSearch } from '@/components/StockSearch';
 
 const titleClasses = 'text-xs text-gray-400 font-semibold py-2 px-3';
 const linkClasses = clsx(
@@ -60,10 +60,7 @@ export function SideMenu() {
         StockWatcher
       </Link>
       <div className='flex flex-1 flex-col'>
-        <div className='flex items-center gap-2 rounded-lg text-sm text-gray-600 m-5 p-3 border-border bg-background-sec'>
-          <SearchIcon size={16} />
-          <p>Bucar ativo...</p>
-        </div>
+        <StockSearch />
         <div className='flex flex-col px-3'>
           <div className='flex flex-col'>
             <h3 className={titleClasses}>CARTEIRA</h3>

@@ -12,9 +12,9 @@ export async function StockIndicators({symbol}: StockIndicatorsProps){
     if(!stock) return null
 
     return(
-        <section className="flex flex-col bg-white p-8 border border-border rounded-2xl gap-6">
+        <section className="flex flex-col gap-5 rounded-2xl border border-border bg-white p-5 sm:p-6 lg:gap-6 lg:p-8">
             <h3 className="text-primary font-bold">Indicadores Fundamentalistas</h3>
-            <div className="flex gap-8">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:gap-8">
                 {stock.peRatio && <StockIndicator title="P/L" value={stock.peRatio} />}
                 {stock.dividendYield > 0 && <StockIndicator title="Dividend Yield" value={stock.dividendYield} percent />}
                 {stock.priceToBook && <StockIndicator title="P/VP" value={stock.priceToBook} />}
@@ -36,9 +36,9 @@ function StockIndicator({title, value, percent }: StockIndicatorProps){
     const formattedValue = value.toString().replace(".", ",")
 
     return(
-        <div className="flex flex-col bg-background-sec border border-border rounded-lg p-4 w-full">
+        <div className="flex min-w-0 flex-col rounded-lg border border-border bg-background-sec p-4">
             <p className="text-xs font-bold text-muted capitalize">{title}</p>
-            <p className="text-primary text-xl font-bold">{formattedValue}{percent ? "%" : ""}</p>
+            <p className="break-words text-lg font-bold text-primary sm:text-xl">{formattedValue}{percent ? "%" : ""}</p>
         </div>
     )
 }

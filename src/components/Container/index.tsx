@@ -1,10 +1,11 @@
 type ContainerProps = {
   children: React.ReactNode;
+  className?: string;
 };
 
-export function Container({children}: ContainerProps){
+export function Container({children, className = ''}: ContainerProps){
     return(
-        <div className=" flex flex-col w-full h-full p-8 bg-background-sec gap-7">
+        <div className={`flex h-full w-full flex-col gap-7 bg-background-sec p-8 ${className}`}>
             {children}
         </div>
     )

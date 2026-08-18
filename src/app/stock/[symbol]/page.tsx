@@ -34,9 +34,9 @@ export default function StockPage({ params }: StockPageProps) {
   );
 
   return (
-    <Container>
-      <div className='flex gap-8'>
-        <div className='flex flex-col w-3/5 gap-8'>
+    <Container className='gap-5 p-4 sm:p-6 lg:p-8'>
+      <div className='grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-5 xl:gap-8'>
+        <div className='flex min-w-0 flex-col gap-5 xl:col-span-3 xl:gap-8'>
           <Suspense fallback={<SkeletonLoader className='h-72' />}>
             {stockSymbol.then(symbol => (
               <InfoSection symbol={symbol} />
@@ -48,7 +48,7 @@ export default function StockPage({ params }: StockPageProps) {
             ))}
           </Suspense>
         </div>
-        <div className='flex flex-col gap-8 w-2/5'>
+        <div className='flex min-w-0 flex-col gap-5 xl:col-span-2 xl:gap-8'>
           <Suspense fallback={<SkeletonLoader className='h-80' />}>
             {stockSymbol.then(symbol => (
               <AlertForm symbol={symbol} />

@@ -22,13 +22,13 @@ export async function ActiveAlerts({symbol}: ActiveAlertsProps){
     if(thisStockAlerts.length === 0) return null
 
     return(
-        <div className="flex flex-col bg-white border border-border rounded-2xl p-6  gap-4">
+        <section className="flex flex-col gap-4 rounded-2xl border border-border bg-white p-5 sm:p-6">
             <p className="flex justify-between text-primary text-sm font-bold">Alertas Ativos ({thisStockAlerts.length}) <BellIcon size={18} className="text-green-600"/></p>
             <div className="flex flex-col gap-3">
                 {thisStockAlerts.map((al: AlertModel) => {
                     return <AlertCard key={al.id} alert={al} />
                 })}
             </div>
-        </div>
+        </section>
     )
 }

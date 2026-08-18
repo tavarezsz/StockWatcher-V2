@@ -76,6 +76,7 @@ export class yahooStockProvider implements MarketDataProvider {
     const searchOptions: SearchOptions = {
       newsCount: 0,
       region: 'BR',
+      enableFuzzyQuery: true,
     };
 
     const results = await this.yahooFinance.search(term, searchOptions);

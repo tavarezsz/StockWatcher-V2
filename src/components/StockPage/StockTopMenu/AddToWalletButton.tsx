@@ -15,10 +15,13 @@ export function AddToWalletButton({ stock }: AddToWalletButtonProps) {
   return (
     <>
       <button
+        type='button'
+        aria-label='Adicionar à carteira'
         onClick={() => setDialogOpen(true)}
-        className='flex items-center py-2 px-3 bg-green-600 rounded-lg text-white gap-2 cursor-pointer hover:bg-green-700'
+        className='flex size-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-green-600 text-white hover:bg-green-700 sm:h-auto sm:w-auto sm:px-3 sm:py-2'
       >
-        <PlusIcon size={16} /> <p className='text-sm'>Adicionar à Carteira</p>
+        <PlusIcon size={16} />
+        <span className='hidden text-sm sm:inline'>Adicionar à Carteira</span>
       </button>
       {dialogOpen && (
         <StockInstanceDialog

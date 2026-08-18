@@ -9,7 +9,7 @@ type SpinLoaderProps = {
 
 export function SkeletonLoader({heigth=200, width, className = '' }: SpinLoaderProps) {
   return (
-    <div className={className}>
+  <div className={`h-full ${className}`}>
       <Skeleton height={heigth} width={width}/>
     </div>
   );

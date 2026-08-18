@@ -3,14 +3,12 @@ import { FeaturedIndicators } from '@/components/FeaturedIndicators';
 import { FeaturedStocks } from '@/components/FeaturedStocks';
 import { RecentAlerts } from '@/components/RecentAlerts';
 import { SkeletonLoader } from '@/components/SpinLoader';
-import { StockCard } from '@/components/StockCard';
 import { WalletSummary } from '@/components/WalletSummary';
-import { stockService } from '@/lib/StockService/stock-service';
 import { Suspense } from 'react';
 
 export default function Home() {
   return (
-    <Container>
+    <Container className='gap-5 p-4 sm:p-6 lg:gap-7 lg:p-8'>
       <Suspense fallback={<SkeletonLoader heigth={28} />}>
         <WalletSummary />
       </Suspense>

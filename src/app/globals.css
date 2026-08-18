@@ -86,3 +86,7 @@ body {
   color: var(--color-primary);
   font-family: var(--font-sans)
 }
+
+body button{
+  cursor: pointer;
+}

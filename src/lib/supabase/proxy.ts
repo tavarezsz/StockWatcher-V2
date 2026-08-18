@@ -47,17 +47,21 @@ export async function updateSession(request: NextRequest) {
   // cookies expirados antes de a rota protegida ser renderizada.
   const { data } = await supabase.auth.getClaims();
   const isPublicRoute =
+    request.nextUrl.pathname === '/about' ||
     request.nextUrl.pathname === '/login' ||
     request.nextUrl.pathname.startsWith('/auth/');
 
   if (!data?.claims && !isPublicRoute) {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = '/about';
     url.search = '';
     return NextResponse.redirect(url);
   }
 
-  if (data?.claims && request.nextUrl.pathname === '/login') {
+  if (
+    data?.claims &&
+    ['/about', '/login'].includes(request.nextUrl.pathname)
+  ) {
     const url = request.nextUrl.clone();
     url.pathname = '/';
     url.search = '';
