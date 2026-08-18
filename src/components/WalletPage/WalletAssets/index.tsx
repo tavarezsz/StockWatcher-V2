@@ -1,15 +1,13 @@
 import { walletService } from '@/lib/WalletService/wallet-service';
 import { getStockInitials } from '@/utils/getStockInitials';
 import { WalletAssetsTable, type WalletAssetRow } from './WalletAssetsTable';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 export async function WalletAssets() {
-  // TODO: implementar autenticação
-  const userId =
-    process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36';
+  const user = await getCurrentUser();
+  if (!user) return null;
 
-  if (!userId) return null;
-
-  const wallet = await walletService.getWalletCached(userId);
+  const wallet = await walletService.getWalletCached(user.id);
 
   if (!wallet) return null;
 

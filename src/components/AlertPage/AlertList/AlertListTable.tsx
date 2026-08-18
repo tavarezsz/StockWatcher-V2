@@ -10,6 +10,7 @@ import { formatPrice, formatVariation } from '@/utils/formatters';
 import { SearchIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { getStockHref } from '@/utils/stockRoute';
 
 export type AlertListRow = {
   id?: string;
@@ -241,7 +242,7 @@ function AlertTableRow({ alert }: { alert: AlertListRow }) {
     <tr className='border-b border-border text-sm last:border-b-0'>
       <td className='px-5 py-3.5 sm:px-6'>
         <Link
-          href={`/stock/${encodeURIComponent(alert.stockSymbol)}`}
+          href={getStockHref(alert.stockSymbol)}
           className='font-bold text-primary transition-colors hover:text-green-600'
         >
           {displaySymbol}

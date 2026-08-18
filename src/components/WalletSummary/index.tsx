@@ -3,12 +3,13 @@ import { formatPrice } from '@/utils/formatters';
 import { LastUpdate } from './LastUpdate';
 import { VariationBadge } from '../atoms/variationBadge';
 import { WalletHighlights } from './WalletHighlights';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 export async function WalletSummary() {
-  // TODO: implementação de session
-  const wallet = await walletService.getWalletCached(
-    process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36',
-  );
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const wallet = await walletService.getWalletCached(user.id);
 
   if (!wallet) return null;
 

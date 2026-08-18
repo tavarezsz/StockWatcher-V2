@@ -14,6 +14,7 @@ import { useMemo, useState } from 'react';
 import { LastUpdate } from '../../WalletSummary/LastUpdate';
 import { DeleteAssetButton } from './DeleteAssetButton';
 import { EditAssetButton } from './EditAssetButton';
+import { getStockHref } from '@/utils/stockRoute';
 
 export type WalletAssetRow = {
   itemId: string;
@@ -256,7 +257,7 @@ function WalletAssetTableRow({ row }: { row: WalletAssetRow }) {
     <tr className='border-b border-border last:border-b-0'>
       <td className='px-5 py-4 sm:px-6'>
         <Link
-          href={`/stock/${encodeURIComponent(row.symbol)}`}
+          href={getStockHref(row.symbol)}
           className='group flex w-fit items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2'
         >
           <span className='flex size-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-sm font-semibold text-green-600'>

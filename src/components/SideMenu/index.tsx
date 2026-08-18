@@ -1,4 +1,6 @@
-'use client'
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 import {
@@ -8,8 +10,12 @@ import {
   CogIcon,
   CircleQuestionMarkIcon,
   SearchIcon,
+  LogOutIcon,
 } from 'lucide-react';
 import { PushNotificationButton } from '@/components/PushNotificationButton';
+import { createClient } from '@/lib/supabase/client';
+import { signOutAction } from '@/actions/auth/sign-out';
+import { unsubscribeFromPushAction } from '@/actions/push/unsubscribe-push';
 
 const titleClasses = 'text-xs text-gray-400 font-semibold py-2 px-3';
 const linkClasses = clsx(
@@ -17,9 +23,34 @@ const linkClasses = clsx(
   'hover:text-green-600 transition',
 );
 
-const loggedUser = 'ANONIMO';
-
 export function SideMenu() {
+  const [loggedUser, setLoggedUser] = useState('USUÁRIO');
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    void supabase.auth.getUser().then(({ data }) => {
+      setLoggedUser(data.user?.email ?? 'USUÁRIO');
+    });
+  }, []);
+
+  async function handleSignOut() {
+    setIsSigningOut(true);
+
+    try {
+      const registration = await navigator.serviceWorker?.getRegistration();
+      const subscription = await registration?.pushManager.getSubscription();
+
+      if (subscription) {
+        await unsubscribeFromPushAction(subscription.endpoint);
+        await subscription.unsubscribe();
+      }
+    } finally {
+      await signOutAction();
+    }
+  }
+
   return (
     <div className='flex flex-col border-r border-border min-h-screen'>
       <Link
@@ -60,8 +91,20 @@ export function SideMenu() {
           <div className='border-t border-border p-3'>
             <PushNotificationButton />
           </div>
-          <div className='border-t border-border p-4 text-sm text-primary'>
-            {loggedUser}
+          <div className='flex items-center justify-between gap-2 border-t border-border p-4 text-sm text-primary'>
+            <span className='min-w-0 truncate' title={loggedUser}>
+              {loggedUser}
+            </span>
+            <button
+              type='button'
+              title='Sair'
+              aria-label='Sair da conta'
+              disabled={isSigningOut}
+              onClick={() => void handleSignOut()}
+              className='rounded-md p-1.5 text-gray-500 transition hover:bg-background-sec hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50'
+            >
+              <LogOutIcon size={16} />
+            </button>
           </div>
         </div>
       </div>

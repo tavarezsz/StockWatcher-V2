@@ -2,13 +2,12 @@
 
 import { walletService } from "@/lib/WalletService/wallet-service";
 import { updateTag } from "next/cache";
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 export async function deleteAssetAction(id: string){
-     //TODO: Implementar session
-      const isAuthenticated = true;
-      const userId = process.env.DEV_USER_ID
-    
-      if (!isAuthenticated || !userId) {
+      const user = await getCurrentUser();
+
+      if (!user) {
         return {
           errors: ['Faça login para realizar essa ação'],
         };
@@ -22,7 +21,7 @@ export async function deleteAssetAction(id: string){
     
     
       try{
-        await walletService.removeAsset(userId, id)
+        await walletService.removeAsset(user.id, id)
       } catch(err: unknown){
         if(err instanceof Error){
             return{
@@ -34,7 +33,7 @@ export async function deleteAssetAction(id: string){
         }
       }
     
-      updateTag(`wallet:${userId}`)
+      updateTag(`wallet:${user.id}`)
     
       return{
         error: ''

@@ -2,6 +2,7 @@ import { alertService } from '@/lib/AlertService/alert-service';
 import type { AlertModel } from '@/models/alert-model';
 import { formatPrice, formatVariation } from '@/utils/formatters';
 import { DeleteAlertButton } from './DeleteAlertButton';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   day: '2-digit',
@@ -28,9 +29,10 @@ const statusConfig: Record<
 };
 
 export async function RecentAlerts() {
-  const alerts = await alertService.getUserAlertsCached(
-    process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36',
-  );
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const alerts = await alertService.getUserAlertsCached(user.id);
 
   const displayedAlerts = [...alerts]
     .sort(

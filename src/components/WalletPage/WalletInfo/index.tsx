@@ -3,15 +3,13 @@ import { formatPrice, formatVariation } from '@/utils/formatters';
 import { ArrowDownIcon, ArrowUpIcon, MinusIcon } from 'lucide-react';
 import { LastUpdate } from '../../WalletSummary/LastUpdate';
 import { WalletComposition } from './WalletComposition';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 export async function WalletInfo() {
-  // TODO: implementar autenticação
-  const userId =
-    process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36';
+  const user = await getCurrentUser();
+  if (!user) return null;
 
-  if (!userId) return null;
-
-  const wallet = await walletService.getWalletCached(userId);
+  const wallet = await walletService.getWalletCached(user.id);
 
   if (!wallet) return null;
 

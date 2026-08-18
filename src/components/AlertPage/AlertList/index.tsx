@@ -1,15 +1,13 @@
 import { alertService } from '@/lib/AlertService/alert-service';
 import type { AlertModel } from '@/models/alert-model';
 import { AlertListTable, type AlertListRow } from './AlertListTable';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 export async function AlertList() {
-  // TODO: implementar autenticação
-  const userId =
-    process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36';
+  const user = await getCurrentUser();
+  if (!user) return null;
 
-  if (!userId) return null;
-
-  const alerts = await alertService.getUserAlertsCached(userId);
+  const alerts = await alertService.getUserAlertsCached(user.id);
   const rows: AlertListRow[] = [...alerts]
     .sort(
       (first, second) =>

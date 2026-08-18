@@ -3,15 +3,17 @@ import { alertService } from "@/lib/AlertService/alert-service"
 import type { AlertModel } from "@/models/alert-model"
 import { BellIcon } from "lucide-react"
 import { AlertCard } from "./AlertCard"
+import { getCurrentUser } from '@/lib/AuthService/auth-service'
 
 type ActiveAlertsProps = {
     symbol: string
 }
 
 export async function ActiveAlerts({symbol}: ActiveAlertsProps){
-    //TODO: implementação de login
-    const userId = process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36'
-    const allUserAlerts = await alertService.getUserAlertsCached(userId)
+    const user = await getCurrentUser()
+    if (!user) return null
+
+    const allUserAlerts = await alertService.getUserAlertsCached(user.id)
 
 
     if(allUserAlerts.length === 0) return null

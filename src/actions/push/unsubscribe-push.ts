@@ -3,14 +3,14 @@
 import type { PushActionResponse } from "./action-response";
 import { pushSubscriptionService } from "@/lib/PushSubscriptionService";
 import { pushEndpointSchema } from "@/lib/PushSubscriptionService/validations";
+import { getCurrentUser } from "@/lib/AuthService/auth-service";
 
 export async function unsubscribeFromPushAction(
   endpoint: unknown,
 ): Promise<PushActionResponse> {
-  // TODO: substituir pelo usuário da sessão quando a autenticação for implementada.
-  const userId = process.env.DEV_USER_ID;
+  const user = await getCurrentUser();
 
-  if (!userId) {
+  if (!user) {
     return {
       success: false,
       error: "Faça login para desativar as notificações",
@@ -27,7 +27,7 @@ export async function unsubscribeFromPushAction(
   }
 
   try {
-    await pushSubscriptionService.unsubscribe(userId, parsedEndpoint.data);
+    await pushSubscriptionService.unsubscribe(user.id, parsedEndpoint.data);
     return { success: true };
   } catch (error) {
     console.error("Erro ao remover inscrição de push", error);

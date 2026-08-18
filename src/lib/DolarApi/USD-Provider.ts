@@ -25,4 +25,3 @@ export async function getCurrentUsdPrice(): Promise<DolarPrice> {
   }
 }
 
-getCurrentUsdPrice();

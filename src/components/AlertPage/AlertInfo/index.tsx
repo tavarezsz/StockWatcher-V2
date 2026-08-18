@@ -1,15 +1,14 @@
 import { alertService } from "@/lib/AlertService/alert-service"
 import { connection } from "next/server"
+import { getCurrentUser } from '@/lib/AuthService/auth-service'
 
 const LAST_24_HOURS_IN_MS = 24 * 60 * 60 * 1000
 
 export async function AlertInfo(){
-    //TODO: implementar autenticação
-    const userId = process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36'
+    const user = await getCurrentUser()
+    if(!user) return null
 
-    if(!userId) return null
-
-    const alerts = await alertService.getUserAlertsCached(userId)
+    const alerts = await alertService.getUserAlertsCached(user.id)
     if(alerts.length === 0) return null
 
     const activeAlerts = alerts.filter((alert) => alert.status === "ativo").length

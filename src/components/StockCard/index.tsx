@@ -4,6 +4,7 @@ import { getStockInitials } from '@/utils/getStockInitials';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { VariationBadge } from '../atoms/variationBadge';
 import Link from 'next/link';
+import { getStockHref } from '@/utils/stockRoute';
 
 type StockCardProps = {
   stock: StockModel;
@@ -15,7 +16,7 @@ export function StockCard({ stock }: StockCardProps) {
   const initials = getStockInitials(stock.name)
 
   return (
-    <Link href={`/stock/${stock.symbol}`} className='flex flex-col p-4 border border-border rounded-2xl relative'>
+    <Link href={getStockHref(stock.symbol)} className='flex flex-col p-4 border border-border rounded-2xl relative'>
       {/*Linha 1 - Título, nome, variação*/}
       <div className='flex items-start justify-between'>
         <div className='flex gap-3'>

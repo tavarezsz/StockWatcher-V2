@@ -1,6 +1,7 @@
 import { pushSubscriptionService } from "@/lib/PushSubscriptionService";
 import { formatPrice, formatVariation } from "@/utils/formatters";
 import webPush from "web-push";
+import { getStockHref } from "@/utils/stockRoute";
 
 export type WebPushPayload = {
   title: string;
@@ -130,7 +131,7 @@ export class WebPushService {
     return this.sendToUser(notification.userId, {
       title: `Alerta de ${notification.symbol} disparado`,
       body,
-      url: `/stock/${encodeURIComponent(notification.symbol)}`,
+      url: getStockHref(notification.symbol),
       tag: `alert-${notification.alertId}`,
     });
   }

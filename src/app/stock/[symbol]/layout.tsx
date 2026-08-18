@@ -1,5 +1,6 @@
 import { StockTopMenu } from '@/components/StockPage/StockTopMenu';
 import { Suspense } from 'react';
+import { normalizeStockSymbol } from '@/utils/stockRoute';
 
 type StockLayoutProps = {
   children: React.ReactNode;
@@ -7,10 +8,14 @@ type StockLayoutProps = {
 };
 
 export default function StockLayout({ children, params }: StockLayoutProps) {
+  const stockSymbol = params.then(({ symbol }) =>
+    normalizeStockSymbol(symbol),
+  );
+
   return (
     <div className='flex min-h-full flex-col'>
       <Suspense fallback={<StockTopMenuSkeleton />}>
-        {params.then(({ symbol }) => (
+        {stockSymbol.then(symbol => (
           <StockTopMenu symbol={symbol} />
         ))}
       </Suspense>

@@ -18,7 +18,9 @@ export default function Home() {
       <Suspense fallback={<SpinLoader />}>
         <FeaturedStocks seeAllLink='/stock' lineItems={2} maxItems={4} />
       </Suspense>
-      <RecentAlerts/>
+      <Suspense fallback={<SpinLoader />}>
+        <RecentAlerts />
+      </Suspense>
     </Container>
   );
 }
