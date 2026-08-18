@@ -3,7 +3,7 @@ import { WalletAssets } from "@/components/WalletPage/WalletAssets";
 import { WalletInfo } from "@/components/WalletPage/WalletInfo";
 import { Metadata } from "next";
 import { Suspense } from 'react';
-import { SpinLoader } from '@/components/SpinLoader';
+import { SkeletonLoader } from '@/components/SpinLoader';
 
 export const metadata: Metadata = {
   title: 'Minha Carteira',
@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 export default function WalletPage(){
     return(
         <Container>
-            <Suspense fallback={<SpinLoader />}>
+            <Suspense fallback={<SkeletonLoader className='h-52' />}>
                 <WalletInfo/>
             </Suspense>
-            <Suspense fallback={<SpinLoader />}>
+            <Suspense fallback={<SkeletonLoader className='h-[32rem]' />}>
                 <WalletAssets/>
             </Suspense>
         </Container>

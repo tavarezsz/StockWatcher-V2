@@ -3,12 +3,13 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { AddToWalletAction } from '@/actions/wallet/add-to-wallet';
 import { StockInstanceDialog } from '@/components/atoms/StockInstanceDialog';
+import { StockModel } from '@/models/stock-model';
 
 type AddToWalletButtonProps = {
-  symbol: string;
+  stock: StockModel;
 };
 
-export function AddToWalletButton({ symbol }: AddToWalletButtonProps) {
+export function AddToWalletButton({ stock }: AddToWalletButtonProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -23,9 +24,9 @@ export function AddToWalletButton({ symbol }: AddToWalletButtonProps) {
         <StockInstanceDialog
           action={AddToWalletAction}
           initialValue={{
-            stockSymbol: symbol,
+            stockSymbol: stock.symbol,
             quantity: 0,
-            referencePrice: 0,
+            referencePrice: stock.price,
           }}
           onClose={() => setDialogOpen(false)}
         />

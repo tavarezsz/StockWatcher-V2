@@ -30,7 +30,7 @@ export async function StockTopMenu({ symbol }: StockTopMenuProps) {
         </div>
       
         <div className='flex gap-3'>
-         <AddToWalletButton symbol={stock.symbol}/>
+         <AddToWalletButton stock={stock}/>
         </div>
       </div>
     </header>

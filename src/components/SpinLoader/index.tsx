@@ -1,22 +1,16 @@
 import clsx from 'clsx';
+import { Skeleton } from '@mui/material';
 
 type SpinLoaderProps = {
   className?: string;
+  heigth?: number;
+  width?: number
 };
 
-export function SpinLoader({ className = '' }: SpinLoaderProps) {
-  const classes = clsx('flex', 'items-center', 'justify-center', className);
-
+export function SkeletonLoader({heigth=200, width, className = '' }: SpinLoaderProps) {
   return (
-    <div className={classes}>
-      <div
-        className={clsx(
-          'w-10 h-10',
-          'border-5 border-t-transparent border-slate-900',
-          'rounded-full',
-          'animate-spin',
-        )}
-      ></div>
+    <div className={className}>
+      <Skeleton height={heigth} width={width}/>
     </div>
   );
 }

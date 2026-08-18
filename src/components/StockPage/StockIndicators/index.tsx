@@ -11,8 +11,6 @@ export async function StockIndicators({symbol}: StockIndicatorsProps){
 
     if(!stock) return null
 
-    console.log("Stock ", stock)
-
     return(
         <section className="flex flex-col bg-white p-8 border border-border rounded-2xl gap-6">
             <h3 className="text-primary font-bold">Indicadores Fundamentalistas</h3>

@@ -1,5 +1,5 @@
 import { Container } from '@/components/Container';
-import { SpinLoader } from '@/components/SpinLoader';
+import { SkeletonLoader } from '@/components/SpinLoader';
 import { ActiveAlerts } from '@/components/StockPage/ActiveAlerts';
 import { AlertForm } from '@/components/StockPage/AlertForm';
 import { InfoSection } from '@/components/StockPage/InfoSection';
@@ -37,24 +37,24 @@ export default function StockPage({ params }: StockPageProps) {
     <Container>
       <div className='flex gap-8'>
         <div className='flex flex-col w-3/5 gap-8'>
-          <Suspense fallback={<SpinLoader />}>
+          <Suspense fallback={<SkeletonLoader className='h-72' />}>
             {stockSymbol.then(symbol => (
               <InfoSection symbol={symbol} />
             ))}
           </Suspense>
-          <Suspense fallback={<SpinLoader />}>
+          <Suspense fallback={<SkeletonLoader className='h-44' />}>
             {stockSymbol.then(symbol => (
               <StockIndicators symbol={symbol} />
             ))}
           </Suspense>
         </div>
         <div className='flex flex-col gap-8 w-2/5'>
-          <Suspense fallback={<SpinLoader />}>
+          <Suspense fallback={<SkeletonLoader className='h-80' />}>
             {stockSymbol.then(symbol => (
               <AlertForm symbol={symbol} />
             ))}
           </Suspense>
-          <Suspense fallback={<SpinLoader />}>
+          <Suspense fallback={<SkeletonLoader className='h-40' />}>
             {stockSymbol.then(symbol => (
               <ActiveAlerts symbol={symbol} />
             ))}
