@@ -57,6 +57,7 @@ export async function RecentAlerts() {
         </div>
         <Link
           href='/alerts'
+          prefetch={false}
           className='text-sm font-semibold text-green-600 hover:text-green-800 lg:hidden'
         >
           Gerenciar
@@ -113,6 +114,7 @@ function MobileAlertCard({ alert }: { alert: AlertModel }) {
     <article className='flex items-center gap-3 rounded-xl border border-border bg-white p-3.5'>
       <Link
         href={getStockHref(alert.stockSymbol)}
+        prefetch={false}
         aria-label={`Abrir ${displaySymbol}`}
         className='flex size-11 shrink-0 items-center justify-center rounded-xl bg-green-100 text-xs font-bold text-green-700'
       >
@@ -121,6 +123,7 @@ function MobileAlertCard({ alert }: { alert: AlertModel }) {
       <div className='min-w-0 flex-1'>
         <Link
           href={getStockHref(alert.stockSymbol)}
+          prefetch={false}
           className='text-sm font-bold text-primary hover:text-green-700'
         >
           {displaySymbol}

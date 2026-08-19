@@ -258,6 +258,7 @@ function WalletAssetTableRow({ row }: { row: WalletAssetRow }) {
       <td className='px-5 py-4 sm:px-6'>
         <Link
           href={getStockHref(row.symbol)}
+          prefetch={false}
           className='group flex w-fit items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2'
         >
           <span className='flex size-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-sm font-semibold text-green-600'>

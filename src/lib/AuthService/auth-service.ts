@@ -13,15 +13,16 @@ export type AuthenticatedUser = {
 export const getCurrentUser = cache(
   async (): Promise<AuthenticatedUser | null> => {
     const supabase = await createClient();
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getClaims();
+    const claims = data?.claims;
 
-    if (error || !data.user?.email) {
+    if (error || !claims?.sub || !claims.email) {
       return null;
     }
 
     return {
-      id: data.user.id,
-      email: data.user.email,
+      id: claims.sub,
+      email: claims.email,
     };
   },
 );

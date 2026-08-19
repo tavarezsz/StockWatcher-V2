@@ -195,6 +195,7 @@ function SearchResultCard({
   return (
     <Link
       href={getStockHref(stock.symbol)}
+      prefetch={false}
       onClick={onSelect}
       className='flex min-w-0 items-center gap-3 rounded-xl border border-border p-4 transition hover:border-green-300 hover:bg-green-50/40'
     >

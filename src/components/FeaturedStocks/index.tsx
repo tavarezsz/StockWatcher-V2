@@ -35,7 +35,7 @@ export async function FeaturedStocks({
     <section className='flex flex-col gap-4 lg:rounded-xl lg:border lg:border-border lg:bg-white lg:p-6'>
         <div className='flex items-center justify-between'>
             <h2 className='font-bold text-primary'>Ações em destaque</h2>
-            {seeAllLink && <Link href={seeAllLink} className='text-sm font-semibold text-green-600 hover:text-green-800'>Ver todos</Link>}
+            {seeAllLink && <Link href={seeAllLink} prefetch={false} className='text-sm font-semibold text-green-600 hover:text-green-800'>Ver todos</Link>}
         </div>
         <div className={`flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 lg:grid lg:gap-5 lg:overflow-visible lg:pb-0 ${columns}`}>
         {featuredStocks.slice(0, maxItems).map((stock) => (

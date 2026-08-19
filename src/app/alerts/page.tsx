@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function AlertPage(){
 
     return(
-        <Container>
+        <Container className='gap-5 p-4 sm:p-6 lg:gap-7 lg:p-8'>
             <Suspense fallback={<SkeletonLoader className='h-24' />}>
                 <AlertInfo/>
             </Suspense>

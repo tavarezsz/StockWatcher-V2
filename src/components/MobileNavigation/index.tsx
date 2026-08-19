@@ -29,6 +29,7 @@ export function MobileNavigation() {
             <Link
               key={href}
               href={href}
+              prefetch={false}
               aria-current={isActive ? 'page' : undefined}
               className={clsx(
                 'flex flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors',

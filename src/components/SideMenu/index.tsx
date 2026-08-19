@@ -30,8 +30,8 @@ export function SideMenu() {
   useEffect(() => {
     const supabase = createClient();
 
-    void supabase.auth.getUser().then(({ data }) => {
-      setLoggedUser(data.user?.email ?? 'USUÁRIO');
+    void supabase.auth.getClaims().then(({ data }) => {
+      setLoggedUser(data?.claims?.email ?? 'USUÁRIO');
     });
   }, []);
 
@@ -55,6 +55,7 @@ export function SideMenu() {
     <div className='flex flex-col border-r border-border min-h-screen'>
       <Link
         href='/'
+        prefetch={false}
         className='text-xl font-bold text-primary p-6 border-b  border-t border-border h-[78px]'
       >
         StockWatcher
@@ -64,22 +65,22 @@ export function SideMenu() {
         <div className='flex flex-col px-3'>
           <div className='flex flex-col'>
             <h3 className={titleClasses}>CARTEIRA</h3>
-            <Link href='/' className={linkClasses}>
+            <Link href='/' prefetch={false} className={linkClasses}>
               <LayoutDashboardIcon size={16} /> <p>Painel Geral</p>
             </Link>
-            <Link href='/wallet' className={linkClasses}>
+            <Link href='/wallet' prefetch={false} className={linkClasses}>
               <ChartPieIcon size={16} /> <p> Minha Carteira</p>
             </Link>
-            <Link href='/alerts' className={linkClasses}>
+            <Link href='/alerts' prefetch={false} className={linkClasses}>
               <BellIcon size={16} /> <p> Configurar Alertas</p>
             </Link>
           </div>
           <div className='flex flex-col'>
             <h3 className={titleClasses}>FERRAMENTAS</h3>
-            <Link href='/' className={linkClasses}>
+            <Link href='/' prefetch={false} className={linkClasses}>
               <CogIcon size={16} /> <p>Configurações</p>
             </Link>
-            <Link href='/' className={linkClasses}>
+            <Link href='/' prefetch={false} className={linkClasses}>
               <CircleQuestionMarkIcon size={16} /> <p>Ajuda</p>
             </Link>
           </div>

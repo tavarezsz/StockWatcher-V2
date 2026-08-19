@@ -17,6 +17,7 @@ export function StockCard({ stock }: StockCardProps) {
   return (
     <Link
       href={getStockHref(stock.symbol)}
+      prefetch={false}
       className='relative flex min-w-55 snap-start flex-col rounded-2xl border border-border bg-white p-4 transition hover:border-green-300 hover:shadow-sm lg:min-w-0'
     >
       {/*Linha 1 - Título, nome, variação*/}

@@ -33,12 +33,12 @@ export async function AlertInfo(){
 
 
     return(
-        <div className="flex gap-5 w-full">
+        <section className="grid w-full grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
             <InfoAlertCard title="Total de alertas" value={alerts.length} />
             <InfoAlertCard title="Ativos" value={activeAlerts} type="active" />
             <InfoAlertCard title="Disparados (24H)" value={dispatchedAlerts24h} />
             <InfoAlertCard title="Total disparados" value={dispatchedAlerts.length} type="muted" />
-        </div>
+        </section>
     )
 }
 
@@ -57,9 +57,9 @@ function InfoAlertCard({title, value, type='default'}: InfoAlertCardProps) {
     }
 
     return(
-        <div className="flex flex-col gap-1 bg-white border border-border rounded-xl p-5 w-full ">
-            <p className="text-sm font-bold text-muted capitalize">{title}</p>
-            <p className={`font-bold text-2xl ${cardTypes[type]}`}>{value}</p>
-        </div>
+        <article className="flex min-w-0 flex-col gap-1 rounded-xl border border-border bg-white p-4 lg:p-5">
+            <p className="text-xs font-bold capitalize text-muted sm:text-sm">{title}</p>
+            <p className={`text-2xl font-bold ${cardTypes[type]}`}>{value}</p>
+        </article>
     )
 }

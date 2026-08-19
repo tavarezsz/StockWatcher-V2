@@ -106,7 +106,7 @@ export function AlertListTable({ rows }: AlertListTableProps) {
   return (
     <section className='overflow-hidden rounded-xl border border-border bg-white'>
       <div className='flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6'>
-        <div className='flex items-center gap-1' aria-label='Filtrar alertas'>
+        <div className='flex w-full items-center gap-1 sm:w-auto' aria-label='Filtrar alertas'>
           {filters.map(filter => {
             const isSelected = statusFilter === filter.value;
 
@@ -116,7 +116,7 @@ export function AlertListTable({ rows }: AlertListTableProps) {
                 type='button'
                 aria-pressed={isSelected}
                 onClick={() => handleFilterChange(filter.value)}
-                className={`cursor-pointer rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                className={`flex-1 cursor-pointer rounded-lg px-3 py-2 text-xs font-medium transition-colors sm:flex-none ${
                   isSelected
                     ? 'bg-green-50 text-green-600'
                     : 'text-gray-500 hover:bg-gray-50 hover:text-primary'
@@ -144,8 +144,23 @@ export function AlertListTable({ rows }: AlertListTableProps) {
         </label>
       </div>
 
-      <div className='overflow-x-auto border-t border-border'>
-        <table className='w-full min-w-200 table-fixed border-collapse text-left'>
+      {filteredRows.length === 0 ? (
+        <div className='flex min-h-40 items-center justify-center border-t border-border px-6 text-sm text-gray-500'>
+          Nenhum alerta encontrado.
+        </div>
+      ) : (
+        <>
+          <div className='divide-y divide-border border-t border-border lg:hidden'>
+            {visibleRows.map((alert, index) => (
+              <AlertMobileCard
+                key={alert.id ?? `${alert.stockSymbol}-${index}`}
+                alert={alert}
+              />
+            ))}
+          </div>
+
+          <div className='hidden overflow-x-auto border-t border-border lg:block'>
+            <table className='w-full min-w-200 table-fixed border-collapse text-left'>
           <thead>
             <tr className='border-b border-border text-[11px] font-semibold uppercase tracking-wide text-gray-400'>
               <th className='w-[20%] px-5 py-3 sm:px-6'>Ativo</th>
@@ -166,14 +181,10 @@ export function AlertListTable({ rows }: AlertListTableProps) {
               />
             ))}
           </tbody>
-        </table>
-
-        {filteredRows.length === 0 && (
-          <div className='flex min-h-40 items-center justify-center px-6 text-sm text-gray-500'>
-            Nenhum alerta encontrado.
+            </table>
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       <div className='flex min-h-16 flex-col gap-3 border-t border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6'>
         <p className='text-xs text-gray-500'>
@@ -186,51 +197,123 @@ export function AlertListTable({ rows }: AlertListTableProps) {
         </p>
 
         {filteredRows.length > 0 && (
-          <nav className='flex items-center gap-1.5' aria-label='Paginação'>
-            <PaginationButton
-              disabled={currentPage === 1}
-              onClick={() => setPage(currentPage - 1)}
-            >
-              Anterior
-            </PaginationButton>
+          <>
+            <nav className='flex w-full items-center justify-between gap-2 sm:w-auto lg:hidden' aria-label='Paginação'>
+              <PaginationButton
+                disabled={currentPage === 1}
+                onClick={() => setPage(currentPage - 1)}
+              >
+                Anterior
+              </PaginationButton>
+              <span className='text-xs font-medium text-gray-500'>
+                {currentPage} de {totalPages}
+              </span>
+              <PaginationButton
+                disabled={currentPage === totalPages}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                Próximo
+              </PaginationButton>
+            </nav>
 
-            {paginationItems.map(item =>
-              typeof item === 'number' ? (
-                <button
-                  key={item}
-                  type='button'
-                  aria-label={`Ir para a página ${item}`}
-                  aria-current={item === currentPage ? 'page' : undefined}
-                  onClick={() => setPage(item)}
-                  className={`flex size-8 cursor-pointer items-center justify-center rounded-md text-xs font-semibold transition-colors ${
-                    item === currentPage
-                      ? 'bg-green-600 text-white'
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-primary'
-                  }`}
-                >
-                  {item}
-                </button>
-              ) : (
-                <span
-                  key={item}
-                  className='px-1 text-xs text-gray-400'
-                  aria-hidden='true'
-                >
-                  ···
-                </span>
-              ),
-            )}
+            <nav className='hidden items-center gap-1.5 lg:flex' aria-label='Paginação'>
+              <PaginationButton
+                disabled={currentPage === 1}
+                onClick={() => setPage(currentPage - 1)}
+              >
+                Anterior
+              </PaginationButton>
 
-            <PaginationButton
-              disabled={currentPage === totalPages}
-              onClick={() => setPage(currentPage + 1)}
-            >
-              Próximo
-            </PaginationButton>
-          </nav>
+              {paginationItems.map(item =>
+                typeof item === 'number' ? (
+                  <button
+                    key={item}
+                    type='button'
+                    aria-label={`Ir para a página ${item}`}
+                    aria-current={item === currentPage ? 'page' : undefined}
+                    onClick={() => setPage(item)}
+                    className={`flex size-8 cursor-pointer items-center justify-center rounded-md text-xs font-semibold transition-colors ${
+                      item === currentPage
+                        ? 'bg-green-600 text-white'
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-primary'
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ) : (
+                  <span
+                    key={item}
+                    className='px-1 text-xs text-gray-400'
+                    aria-hidden='true'
+                  >
+                    ···
+                  </span>
+                ),
+              )}
+
+              <PaginationButton
+                disabled={currentPage === totalPages}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                Próximo
+              </PaginationButton>
+            </nav>
+          </>
         )}
       </div>
     </section>
+  );
+}
+
+function AlertMobileCard({ alert }: { alert: AlertListRow }) {
+  const status = statusConfig[alert.status];
+  const displaySymbol = alert.stockSymbol.replace(/\.SA$/i, '');
+
+  return (
+    <article className='p-4'>
+      <div className='flex items-start justify-between gap-3'>
+        <div className='min-w-0'>
+          <Link
+            href={getStockHref(alert.stockSymbol)}
+            prefetch={false}
+            className='font-bold text-primary transition-colors hover:text-green-600'
+          >
+            {displaySymbol}
+          </Link>
+          <p className='mt-0.5 text-xs text-gray-500'>
+            {formatAlertCondition(alert)}
+          </p>
+        </div>
+        <div className='flex shrink-0 items-center gap-1'>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[11px] font-medium ${status.classes}`}
+          >
+            <span className='size-1.5 rounded-full bg-current' />
+            {status.label}
+          </span>
+          <DeleteAlertButton alertId={alert.id} />
+        </div>
+      </div>
+
+      <dl className='mt-3 grid grid-cols-2 gap-3 rounded-xl bg-background-sec p-3'>
+        <div>
+          <dt className='text-[10px] font-semibold uppercase tracking-wide text-gray-400'>
+            Valor alvo
+          </dt>
+          <dd className='mt-0.5 text-sm font-bold text-primary'>
+            {formatTargetValue(alert)}
+          </dd>
+        </div>
+        <div>
+          <dt className='text-[10px] font-semibold uppercase tracking-wide text-gray-400'>
+            Criado em
+          </dt>
+          <dd className='mt-0.5 text-sm text-gray-600'>
+            {dateFormatter.format(new Date(alert.createdAt))}
+          </dd>
+        </div>
+      </dl>
+    </article>
   );
 }
 
@@ -243,6 +326,7 @@ function AlertTableRow({ alert }: { alert: AlertListRow }) {
       <td className='px-5 py-3.5 sm:px-6'>
         <Link
           href={getStockHref(alert.stockSymbol)}
+          prefetch={false}
           className='font-bold text-primary transition-colors hover:text-green-600'
         >
           {displaySymbol}

@@ -20,6 +20,7 @@ export async function WalletSummary() {
   return (
     <Link
       href='/wallet'
+      prefetch={false}
       className='flex min-h-40 justify-between rounded-2xl border border-primary bg-primary px-5 py-6 shadow-lg shadow-primary/10 transition hover:-translate-y-0.5 lg:min-h-0 lg:border-border lg:bg-neutral-50 lg:px-7 lg:shadow-none'
     >
       <div className='flex min-w-0 flex-col justify-between gap-5 lg:justify-start lg:gap-0'>
