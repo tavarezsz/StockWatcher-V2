@@ -3,6 +3,10 @@ import { formatPrice, formatVariation } from "@/utils/formatters";
 import webPush from "web-push";
 import { getStockHref } from "@/utils/stockRoute";
 
+type StoredPushSubscriptions = Awaited<
+  ReturnType<typeof pushSubscriptionService.getUserSubscriptions>
+>;
+
 export type WebPushPayload = {
   title: string;
   body: string;
@@ -35,6 +39,27 @@ export class WebPushService {
     const subscriptions =
       await pushSubscriptionService.getUserSubscriptions(userId);
 
+    return this.sendToSubscriptions(subscriptions, payload);
+  }
+
+  async sendToDevice(
+    userId: string,
+    endpoint: string,
+    payload: WebPushPayload,
+  ): Promise<SendWebPushResponse> {
+    const subscriptions =
+      await pushSubscriptionService.getUserSubscriptions(userId);
+    const deviceSubscriptions = subscriptions.filter(
+      subscription => subscription.endpoint === endpoint,
+    );
+
+    return this.sendToSubscriptions(deviceSubscriptions, payload);
+  }
+
+  private async sendToSubscriptions(
+    subscriptions: StoredPushSubscriptions,
+    payload: WebPushPayload,
+  ): Promise<SendWebPushResponse> {
     if (subscriptions.length === 0) {
       return { sent: 0, errors: 0, removed: 0 };
     }

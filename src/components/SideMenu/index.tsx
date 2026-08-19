@@ -9,13 +9,11 @@ import {
   BellIcon,
   CogIcon,
   CircleQuestionMarkIcon,
-  LogOutIcon,
 } from 'lucide-react';
 import { PushNotificationButton } from '@/components/PushNotificationButton';
 import { createClient } from '@/lib/supabase/client';
-import { signOutAction } from '@/actions/auth/sign-out';
-import { unsubscribeFromPushAction } from '@/actions/push/unsubscribe-push';
 import { StockSearch } from '@/components/StockSearch';
+import { SignOutButton } from '@/components/SignOutButton';
 
 const titleClasses = 'text-xs text-gray-400 font-semibold py-2 px-3';
 const linkClasses = clsx(
@@ -25,7 +23,6 @@ const linkClasses = clsx(
 
 export function SideMenu() {
   const [loggedUser, setLoggedUser] = useState('USUÁRIO');
-  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -34,22 +31,6 @@ export function SideMenu() {
       setLoggedUser(data?.claims?.email ?? 'USUÁRIO');
     });
   }, []);
-
-  async function handleSignOut() {
-    setIsSigningOut(true);
-
-    try {
-      const registration = await navigator.serviceWorker?.getRegistration();
-      const subscription = await registration?.pushManager.getSubscription();
-
-      if (subscription) {
-        await unsubscribeFromPushAction(subscription.endpoint);
-        await subscription.unsubscribe();
-      }
-    } finally {
-      await signOutAction();
-    }
-  }
 
   return (
     <div className='flex flex-col border-r border-border min-h-screen'>
@@ -77,10 +58,10 @@ export function SideMenu() {
           </div>
           <div className='flex flex-col'>
             <h3 className={titleClasses}>FERRAMENTAS</h3>
-            <Link href='/' prefetch={false} className={linkClasses}>
+            <Link href='/settings' prefetch={false} className={linkClasses}>
               <CogIcon size={16} /> <p>Configurações</p>
             </Link>
-            <Link href='/' prefetch={false} className={linkClasses}>
+            <Link href='/about' prefetch={false} className={linkClasses}>
               <CircleQuestionMarkIcon size={16} /> <p>Ajuda</p>
             </Link>
           </div>
@@ -93,16 +74,7 @@ export function SideMenu() {
             <span className='min-w-0 truncate' title={loggedUser}>
               {loggedUser}
             </span>
-            <button
-              type='button'
-              title='Sair'
-              aria-label='Sair da conta'
-              disabled={isSigningOut}
-              onClick={() => void handleSignOut()}
-              className='rounded-md p-1.5 text-gray-500 transition hover:bg-background-sec hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50'
-            >
-              <LogOutIcon size={16} />
-            </button>
+            <SignOutButton />
           </div>
         </div>
       </div>

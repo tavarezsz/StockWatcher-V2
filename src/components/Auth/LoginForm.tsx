@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useActionState } from 'react';
 import { authenticateAction, type AuthActionState } from '@/actions/auth/authenticate';
 
@@ -35,6 +36,14 @@ export function LoginForm() {
           className='rounded-lg border border-border bg-white px-3 py-2.5 text-primary outline-none focus:border-green-600'
         />
       </label>
+
+      <Link
+        href='/auth/forgot-password'
+        prefetch={false}
+        className='-mt-2 self-end text-sm font-medium text-green-700 hover:text-green-800'
+      >
+        Esqueci minha senha
+      </Link>
 
       {state.errors.length > 0 && (
         <div className='rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600'>

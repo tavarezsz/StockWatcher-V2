@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BellIcon, ChartPieIcon, CircleHelpIcon, HouseIcon } from 'lucide-react';
+import { BellIcon, ChartPieIcon, CogIcon, HouseIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
@@ -9,7 +9,7 @@ const navigationItems = [
   { href: '/', label: 'Início', icon: HouseIcon },
   { href: '/wallet', label: 'Carteira', icon: ChartPieIcon },
   { href: '/alerts', label: 'Alertas', icon: BellIcon },
-  { href: '/about', label: 'Ajuda', icon: CircleHelpIcon },
+  { href: '/settings', label: 'Ajustes', icon: CogIcon },
 ];
 
 export function MobileNavigation() {
