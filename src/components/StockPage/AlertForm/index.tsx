@@ -76,7 +76,7 @@ export function AlertForm({ symbol }: AlertFormProps) {
   const targetCondition = trigger.endsWith('acima') ? 'above' : 'below';
 
   return (
-    <div className='flex flex-col border border-border rounded-2xl bg-white gap-5 w-full p-6'>
+    <section className='flex w-full flex-col gap-5 rounded-2xl border border-border bg-white p-5 sm:p-6'>
         <div className='flex flex-col gap-1'>
             <p className='font-bold text-primary text-lg'>Configurar Alerta</p>
             <p className='text-muted text-xs '>Seja notificado quando o preço mudar</p>
@@ -110,6 +110,6 @@ export function AlertForm({ symbol }: AlertFormProps) {
           {isPending ? 'Criando alerta...' : 'Criar Alerta de Monitoramento'}
         </button>
       </form>
-    </div>
+    </section>
   );
 }

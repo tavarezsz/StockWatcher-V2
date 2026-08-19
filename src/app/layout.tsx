@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { SideMenu } from '@/components/SideMenu';
-import { TopMenu } from '@/components/TopMenu';
 import { ToastifyContainer } from '@/components/ToastifyContainer';
 import { Suspense } from 'react';
+import { AppShell } from '@/components/AppShell';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -26,16 +25,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-BR'>
-      <body className={`${inter.variable} flex min-h-screen`}>
-        <div className='shrink-0'>
-          <SideMenu />
-        </div>
-        <div className='flex min-w-0 flex-1 flex-col'>
-          <Suspense>
-            <TopMenu />
-          </Suspense>
-          <main className='flex-1 bg-background-sec'>{children}</main>
-        </div>
+      <body className={`${inter.variable} min-h-screen`}>
+        <Suspense fallback={<main className='min-h-screen bg-background-sec' />}>
+          <AppShell>{children}</AppShell>
+        </Suspense>
         <ToastifyContainer />
       </body>
     </html>

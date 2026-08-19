@@ -23,9 +23,9 @@ export function AlertCard({ alert }: AlertCardProps) {
   const createdAt = createdAtFormatter.format(new Date(alert.createdAt));
 
   return (
-    <div className='flex bg-white border border-border rounded-xl p-3 justify-between'>
-      <div>
-        <p className='text-primary text-sm font-bold'>{cardText}</p>
+    <div className='flex min-w-0 justify-between gap-2 rounded-xl border border-border bg-white p-3'>
+      <div className='min-w-0'>
+        <p className='break-words text-sm font-bold text-primary'>{cardText}</p>
         <p className='text-muted text-xs'>Criado em {createdAt}</p>
       </div>
       <DeleteAlertButton alertId={alert.id}/>

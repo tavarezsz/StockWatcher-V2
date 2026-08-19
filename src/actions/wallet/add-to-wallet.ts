@@ -1,9 +1,9 @@
 'use server';
 
-import { stockService } from '@/lib/StockService/stock-service';
 import { addToWalletSchema } from '@/lib/StockService/validations';
 import { walletService } from '@/lib/WalletService/wallet-service';
 import { StockInstanceDTO } from '@/models/wallet-model';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 type AddToWalletActionState = {
   formState: StockInstanceDTO;
@@ -15,9 +15,14 @@ export async function AddToWalletAction(
   prevState: AddToWalletActionState,
   formData: FormData,
 ): Promise<AddToWalletActionState> {
-  //TODO: Implementar autenticação
-  const userId =
-    process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36';
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return {
+      formState: prevState.formState,
+      errors: ['Faça login para realizar essa ação'],
+    };
+  }
 
   if (!(formData instanceof FormData)) {
     return {
@@ -41,7 +46,7 @@ export async function AddToWalletAction(
 
   try {
     const stock = await walletService.addAsset(
-      userId,
+      user.id,
       result.data.stockSymbol,
       result.data.quantity,
       result.data.referencePrice,

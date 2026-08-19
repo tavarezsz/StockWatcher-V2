@@ -42,7 +42,7 @@ export function WalletHighlights({ stocks }: WalletHighlightsProps) {
   }, [stocks]);
 
   return (
-    <div className='flex gap-6 items-center'>
+    <div className='hidden gap-6 items-center lg:flex'>
       <Highlight label='Maior alta' stock={biggestGain} classes='text-green-600' />
       <Highlight label='Maior queda' stock={biggestLoss} classes='text-red-600' />
     </div>

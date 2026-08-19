@@ -1,12 +1,15 @@
 "use client";
 
 import { subscribeToPushAction } from "@/actions/push/subscribe-push";
+import { sendTestPushAction } from "@/actions/push/test-push";
 import { unsubscribeFromPushAction } from "@/actions/push/unsubscribe-push";
 import {
   BellOffIcon,
   BellRingIcon,
   LoaderCircleIcon,
+  SendIcon,
 } from "lucide-react";
+import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -20,12 +23,19 @@ type PushAvailability =
 
 const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
-export function PushNotificationButton() {
+type PushNotificationButtonProps = {
+  variant?: "menu" | "primary";
+};
+
+export function PushNotificationButton({
+  variant = "menu",
+}: PushNotificationButtonProps) {
   const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
   const [availability, setAvailability] =
     useState<PushAvailability>("checking");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isPending, setIsPending] = useState(false);
+  const [isTestPending, setIsTestPending] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -158,6 +168,41 @@ export function PushNotificationButton() {
     }
   }
 
+  async function sendTestNotification() {
+    if (isTestPending || !isSubscribed) return;
+
+    setIsTestPending(true);
+
+    try {
+      const registration = await getRegistration();
+      const subscription = await registration.pushManager.getSubscription();
+
+      if (!subscription) {
+        setIsSubscribed(false);
+        toast.error("Ative as notificações neste dispositivo primeiro");
+        return;
+      }
+
+      const result = await sendTestPushAction(subscription.endpoint);
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      toast.dismiss();
+      toast.success("Teste enviado para este dispositivo");
+    } catch (error) {
+      console.error("Erro ao testar notificações", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Erro ao testar notificações",
+      );
+    } finally {
+      setIsTestPending(false);
+    }
+  }
+
   async function getRegistration(): Promise<ServiceWorkerRegistration> {
     if (registrationRef.current) return registrationRef.current;
 
@@ -176,14 +221,19 @@ export function PushNotificationButton() {
     availability === "misconfigured";
   const label = getButtonLabel(availability, isSubscribed, isPending);
 
-  return (
+  const notificationButton = (
     <button
       type="button"
       onClick={handleClick}
-      disabled={disabled}
+      disabled={disabled || isTestPending}
       aria-pressed={isSubscribed}
       title={getButtonTitle(availability, isSubscribed)}
-      className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 transition hover:bg-green-50 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+      className={clsx(
+        "flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60",
+        variant === "primary"
+          ? "w-full border border-green-600 bg-green-600 text-white hover:bg-green-700 sm:w-auto"
+          : "w-full justify-start border-0 px-3 py-2.5 font-medium text-gray-500 hover:bg-green-50 hover:text-green-600",
+      )}
     >
       {isPending || availability === "checking" ? (
         <LoaderCircleIcon size={16} className="animate-spin" />
@@ -194,6 +244,32 @@ export function PushNotificationButton() {
       )}
       <span>{label}</span>
     </button>
+  );
+
+  if (variant === "menu") return notificationButton;
+
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row">
+      {notificationButton}
+      <button
+        type="button"
+        onClick={() => void sendTestNotification()}
+        disabled={!isSubscribed || disabled || isPending || isTestPending}
+        title={
+          isSubscribed
+            ? "Enviar uma notificação para este dispositivo"
+            : "Ative as notificações antes de realizar o teste"
+        }
+        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-white px-4 py-3 text-sm font-semibold text-primary transition hover:border-green-600 hover:bg-green-50 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+      >
+        {isTestPending ? (
+          <LoaderCircleIcon size={16} className="animate-spin" />
+        ) : (
+          <SendIcon size={16} />
+        )}
+        <span>{isTestPending ? "Enviando..." : "Enviar teste"}</span>
+      </button>
+    </div>
   );
 }
 

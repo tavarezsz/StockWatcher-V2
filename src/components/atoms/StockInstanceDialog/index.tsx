@@ -6,6 +6,7 @@ import type { StockInstanceDTO } from '@/models/wallet-model';
 import clsx from 'clsx';
 import { XIcon } from 'lucide-react';
 import { useActionState, useEffect, useId, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 
 export type StockInstanceDialogState = {
@@ -90,12 +91,18 @@ export function StockInstanceDialog({
   useEffect(() => {
     if (!isVisible) return;
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     function handleEscape(event: KeyboardEvent) {
       if (event.key === 'Escape' && !isPending) onClose();
     }
 
     document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, [isPending, isVisible, onClose]);
 
   if (!isVisible) return null;
@@ -104,16 +111,16 @@ export function StockInstanceDialog({
     if (!isPending) onClose();
   }
 
-  return (
+  return createPortal(
     <div
       className={clsx(
-        'fixed inset-0 z-50 bg-black/50 backdrop-blur-xs',
-        'flex items-center justify-center p-6',
+        'fixed inset-0 z-[60] bg-black/50 backdrop-blur-xs',
+        'flex items-end justify-center sm:items-center sm:p-6',
       )}
       onClick={handleClose}
     >
       <div
-        className='relative flex w-full max-w-lg flex-col gap-6 rounded-xl bg-white p-6 text-left shadow-lg shadow-black/30'
+        className='relative flex max-h-[calc(100dvh-1rem)] w-full max-w-lg flex-col gap-6 overflow-y-auto rounded-t-2xl bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-left shadow-lg shadow-black/30 sm:max-h-[calc(100dvh-3rem)] sm:rounded-xl sm:p-6'
         role='dialog'
         aria-modal='true'
         aria-labelledby={titleId}
@@ -167,7 +174,7 @@ export function StockInstanceDialog({
             />
           </div>
 
-          <div className='flex justify-end gap-3'>
+          <div className='grid grid-cols-2 gap-3 sm:flex sm:justify-end'>
             <button
               type='button'
               disabled={isPending}
@@ -186,6 +193,7 @@ export function StockInstanceDialog({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

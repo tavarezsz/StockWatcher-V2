@@ -11,10 +11,10 @@ type FeaturedStocksProps = {
 };
 
 const gridColumns = {
-  1: 'grid-cols-1',
-  2: 'grid-cols-1 md:grid-cols-2',
-  3: 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3',
-  4: 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4',
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-2 xl:grid-cols-3',
+  4: 'lg:grid-cols-2 xl:grid-cols-4',
 } as const;
 
 export async function FeaturedStocks({
@@ -24,7 +24,7 @@ export async function FeaturedStocks({
   lineItems = 3,
 }: FeaturedStocksProps) {
   const columns =
-    gridColumns[lineItems as keyof typeof gridColumns] ?? 'grid-cols-3';
+    gridColumns[lineItems as keyof typeof gridColumns] ?? 'lg:grid-cols-3';
 
   const featuredStocks =
     stocks && stocks.length > 0
@@ -32,12 +32,12 @@ export async function FeaturedStocks({
       : await getFeaturedStocks();
 
   return (
-    <section className=' flex flex-col bg-white p-6 border gap-5 border-border rounded-xl'>
-        <div className='flex justify-between '> 
-            <p className='font-bold text-primary'>Destaques</p> 
-            {seeAllLink && <Link href={seeAllLink} className='text-green-600 text-sm hover:text-green-800'>Ver todos</Link>}
+    <section className='flex flex-col gap-4 lg:rounded-xl lg:border lg:border-border lg:bg-white lg:p-6'>
+        <div className='flex items-center justify-between'>
+            <h2 className='font-bold text-primary'>Ações em destaque</h2>
+            {seeAllLink && <Link href={seeAllLink} prefetch={false} className='text-sm font-semibold text-green-600 hover:text-green-800'>Ver todos</Link>}
         </div>
-        <div className={`grid gap-5 ${columns} `}>
+        <div className={`flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 lg:grid lg:gap-5 lg:overflow-visible lg:pb-0 ${columns}`}>
         {featuredStocks.slice(0, maxItems).map((stock) => (
             <StockCard key={stock.symbol} stock={stock} />
         ))}

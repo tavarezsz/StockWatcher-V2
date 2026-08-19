@@ -2,23 +2,23 @@ import { Container } from '@/components/Container';
 import { FeaturedIndicators } from '@/components/FeaturedIndicators';
 import { FeaturedStocks } from '@/components/FeaturedStocks';
 import { RecentAlerts } from '@/components/RecentAlerts';
-import { SpinLoader } from '@/components/SpinLoader';
-import { StockCard } from '@/components/StockCard';
+import { SkeletonLoader } from '@/components/SpinLoader';
 import { WalletSummary } from '@/components/WalletSummary';
-import { stockService } from '@/lib/StockService/stock-service';
 import { Suspense } from 'react';
 
 export default function Home() {
   return (
-    <Container>
-      <Suspense fallback={<SpinLoader />}>
+    <Container className='gap-5 p-4 sm:p-6 lg:gap-7 lg:p-8'>
+      <Suspense fallback={<SkeletonLoader heigth={28} />}>
         <WalletSummary />
       </Suspense>
       <FeaturedIndicators />
-      <Suspense fallback={<SpinLoader />}>
+      <Suspense fallback={<SkeletonLoader heigth={72} />}>
         <FeaturedStocks seeAllLink='/stock' lineItems={2} maxItems={4} />
       </Suspense>
-      <RecentAlerts/>
+      <Suspense fallback={<SkeletonLoader heigth={96} />}>
+        <RecentAlerts />
+      </Suspense>
     </Container>
   );
 }

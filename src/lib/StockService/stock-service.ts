@@ -2,6 +2,7 @@ import { StockModel } from "@/models/stock-model";
 import { stockRepository } from "@/repositories/stock";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { marketDataProvider } from "../marketDataProvider";
+import type { SearchResultModel } from "@/models/search-result-model";
 
 export type RefreshQuotesResponse = {
   updated: number;
@@ -87,6 +88,10 @@ function orderStocksBySymbols(
 }
 
 class StockService {
+  async search(term: string): Promise<SearchResultModel[]> {
+    return marketDataProvider.search(term);
+  }
+
   // chamado a partir de um cron job a cada x min, configurado no server
   async refreshQuoteFromCron(symbol: string): Promise<StockModel> {
     const fresh = await marketDataProvider.findBySymbol(symbol);

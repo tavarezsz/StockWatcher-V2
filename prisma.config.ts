@@ -9,7 +9,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("DATABASE_URL"),
-    shadowDatabaseUrl: env("SHADOW_DATABASE_URL"),
+    // O CLI usa uma conexão persistente (Session pooler ou conexão direta).
+    // A aplicação continua usando DATABASE_URL pelo adapter em repositories/client.ts.
+    url: env("DIRECT_URL"),
   },
 });

@@ -3,6 +3,7 @@
 import { AlertModel } from '@/models/alert-model';
 import { createAlertSchema } from '@/lib/AlertService/validations';
 import { alertService } from '@/lib/AlertService/alert-service';
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 type CreateAlertActionState = {
   formState: AlertModel;
@@ -14,9 +15,14 @@ export async function createAlertAction(
   prevState: CreateAlertActionState,
   formData: FormData,
 ): Promise<CreateAlertActionState> {
-  //TODO: implementar autenticação
-  const isAuthenticated = true;
-  const userId = process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36'
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return {
+      formState: prevState.formState,
+      errors: ['Faça login para realizar essa ação'],
+    };
+  }
 
   if (!(formData instanceof FormData)) {
     return {
@@ -47,7 +53,7 @@ export async function createAlertAction(
   try{
     await alertService.createAlert(
     result.data.stockSymbol,
-    userId,
+    user.id,
     result.data.targetValue,
     result.data.targetValueType,
     result.data.targetCondition,

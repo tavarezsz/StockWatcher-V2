@@ -4,14 +4,14 @@ import type { PushActionResponse } from "./action-response";
 import { pushSubscriptionService } from "@/lib/PushSubscriptionService";
 import { pushSubscriptionSchema } from "@/lib/PushSubscriptionService/validations";
 import { headers } from "next/headers";
+import { getCurrentUser } from "@/lib/AuthService/auth-service";
 
 export async function subscribeToPushAction(
   input: unknown,
 ): Promise<PushActionResponse> {
-  // TODO: substituir pelo usuário da sessão quando a autenticação for implementada.
-  const userId = process.env.DEV_USER_ID;
+  const user = await getCurrentUser();
 
-  if (!userId) {
+  if (!user) {
     return {
       success: false,
       error: "Faça login para ativar as notificações",
@@ -33,7 +33,7 @@ export async function subscribeToPushAction(
     const userAgent = (await headers()).get("user-agent");
 
     await pushSubscriptionService.subscribe(
-      userId,
+      user.id,
       parsedSubscription.data,
       userAgent,
     );

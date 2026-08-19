@@ -1,15 +1,14 @@
 import { alertService } from "@/lib/AlertService/alert-service"
 import { connection } from "next/server"
+import { getCurrentUser } from '@/lib/AuthService/auth-service'
 
 const LAST_24_HOURS_IN_MS = 24 * 60 * 60 * 1000
 
 export async function AlertInfo(){
-    //TODO: implementar autenticação
-    const userId = process.env.DEV_USER_ID || 'b7a4ece1-f5c5-49d6-b37b-454de642fb36'
+    const user = await getCurrentUser()
+    if(!user) return null
 
-    if(!userId) return null
-
-    const alerts = await alertService.getUserAlertsCached(userId)
+    const alerts = await alertService.getUserAlertsCached(user.id)
     if(alerts.length === 0) return null
 
     const activeAlerts = alerts.filter((alert) => alert.status === "ativo").length
@@ -34,12 +33,12 @@ export async function AlertInfo(){
 
 
     return(
-        <div className="flex gap-5 w-full">
+        <section className="grid w-full grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
             <InfoAlertCard title="Total de alertas" value={alerts.length} />
             <InfoAlertCard title="Ativos" value={activeAlerts} type="active" />
             <InfoAlertCard title="Disparados (24H)" value={dispatchedAlerts24h} />
             <InfoAlertCard title="Total disparados" value={dispatchedAlerts.length} type="muted" />
-        </div>
+        </section>
     )
 }
 
@@ -58,9 +57,9 @@ function InfoAlertCard({title, value, type='default'}: InfoAlertCardProps) {
     }
 
     return(
-        <div className="flex flex-col gap-1 bg-white border border-border rounded-xl p-5 w-full ">
-            <p className="text-sm font-bold text-muted capitalize">{title}</p>
-            <p className={`font-bold text-2xl ${cardTypes[type]}`}>{value}</p>
-        </div>
+        <article className="flex min-w-0 flex-col gap-1 rounded-xl border border-border bg-white p-4 lg:p-5">
+            <p className="text-xs font-bold capitalize text-muted sm:text-sm">{title}</p>
+            <p className={`text-2xl font-bold ${cardTypes[type]}`}>{value}</p>
+        </article>
     )
 }

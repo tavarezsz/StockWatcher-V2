@@ -11,4 +11,8 @@ export const menuItems = [
     href: '/alerts',
     label: 'Configurar Alertas',
   },
+  {
+    href: '/settings',
+    label: 'Configurações',
+  },
 ];

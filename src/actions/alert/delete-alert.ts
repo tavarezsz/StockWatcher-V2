@@ -2,13 +2,12 @@
 
 import { alertService } from "@/lib/AlertService/alert-service";
 import { updateTag } from "next/cache";
+import { getCurrentUser } from '@/lib/AuthService/auth-service';
 
 export async function deleteAlertAction(id: string) {
-  //TODO: Implementar session
-  const isAuthenticated = true;
-  const userId = process.env.DEV_USER_ID
+  const user = await getCurrentUser();
 
-  if (!isAuthenticated || !userId) {
+  if (!user) {
     return {
       errors: ['Faça login para realizar essa ação'],
     };
@@ -22,7 +21,7 @@ export async function deleteAlertAction(id: string) {
 
 
   try{
-    await alertService.deleteAlert(userId, id)
+    await alertService.deleteAlert(user.id, id)
   } catch(err: unknown){
     if(err instanceof Error){
         return{
@@ -34,7 +33,7 @@ export async function deleteAlertAction(id: string) {
     }
   }
 
-  updateTag(`alerts:${userId}`)
+  updateTag(`alerts:${user.id}`)
   updateTag(`alerts:${id}`)
 
   return{
