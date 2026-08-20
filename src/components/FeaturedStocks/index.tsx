@@ -23,6 +23,7 @@ export async function FeaturedStocks({
   maxItems = 6,
   lineItems = 3,
 }: FeaturedStocksProps) {
+
   const columns =
     gridColumns[lineItems as keyof typeof gridColumns] ?? 'lg:grid-cols-3';
 

@@ -12,10 +12,10 @@ export async function WalletSummary() {
 
   const wallet = await walletService.getWalletCached(user.id);
 
+
   if (!wallet) return null;
 
   const totalValue = formatPrice(wallet.totalValue);
-  
 
   return (
     <Link
@@ -32,7 +32,10 @@ export async function WalletSummary() {
           <p className='text-3xl font-bold text-white sm:text-4xl lg:text-primary'>
             {totalValue}
           </p>
-          <VariationBadge variation={wallet.dayProfitPercent} aditionalText='hoje'/>
+          <VariationBadge
+            variation={wallet.dayProfitPercent}
+            aditionalText='hoje'
+          />
         </div>
       </div>
       <WalletHighlights stocks={wallet.stocks ?? []} />

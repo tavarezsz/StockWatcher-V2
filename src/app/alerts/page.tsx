@@ -15,10 +15,10 @@ export default function AlertPage(){
 
     return(
         <Container className='gap-5 p-4 sm:p-6 lg:gap-7 lg:p-8'>
-            <Suspense fallback={<SkeletonLoader className='h-24' />}>
+            <Suspense fallback={<SkeletonLoader className='min-h-[184px] lg:min-h-[98px]' />}>
                 <AlertInfo/>
             </Suspense>
-            <Suspense fallback={<SkeletonLoader className='h-[30rem]' />}>
+            <Suspense fallback={<SkeletonLoader className='min-h-[960px] lg:min-h-[490px]' />}>
                 <AlertList/>
             </Suspense>
         </Container>

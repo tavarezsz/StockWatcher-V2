@@ -12,7 +12,6 @@ type ActiveAlertsProps = {
 export async function ActiveAlerts({symbol}: ActiveAlertsProps){
     const user = await getCurrentUser()
     if (!user) return null
-
     const allUserAlerts = await alertService.getUserAlertsCached(user.id)
 
 

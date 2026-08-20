@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 export default function WalletPage(){
     return(
         <Container>
-            <Suspense fallback={<SkeletonLoader className='h-52' />}>
+            <Suspense fallback={<SkeletonLoader className='min-h-[379px] lg:min-h-[320px]' />}>
                 <WalletInfo/>
             </Suspense>
-            <Suspense fallback={<SkeletonLoader className='h-[32rem]' />}>
+            <Suspense fallback={<SkeletonLoader className='min-h-[924px] lg:min-h-[548px]' />}>
                 <WalletAssets/>
             </Suspense>
         </Container>

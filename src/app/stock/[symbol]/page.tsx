@@ -37,24 +37,24 @@ export default function StockPage({ params }: StockPageProps) {
     <Container className='gap-5 p-4 sm:p-6 lg:p-8'>
       <div className='grid min-w-0 grid-cols-1 gap-5 xl:grid-cols-5 xl:gap-8'>
         <div className='flex min-w-0 flex-col gap-5 xl:col-span-3 xl:gap-8'>
-          <Suspense fallback={<SkeletonLoader className='h-72' />}>
+          <Suspense fallback={<SkeletonLoader className=' min-h-[210px] lg:min-h-[279px]' />}>
             {stockSymbol.then(symbol => (
               <InfoSection symbol={symbol} />
             ))}
           </Suspense>
-          <Suspense fallback={<SkeletonLoader className='h-44' />}>
+          <Suspense fallback={<SkeletonLoader className='min-h-[254px] lg:min-h-[192px]' />}>
             {stockSymbol.then(symbol => (
               <StockIndicators symbol={symbol} />
             ))}
           </Suspense>
         </div>
         <div className='flex min-w-0 flex-col gap-5 xl:col-span-2 xl:gap-8'>
-          <Suspense fallback={<SkeletonLoader className='h-80' />}>
+          <Suspense fallback={<SkeletonLoader className='min-h-[331px] lg:min-h-[339px]' />}>
             {stockSymbol.then(symbol => (
               <AlertForm symbol={symbol} />
             ))}
           </Suspense>
-          <Suspense fallback={<SkeletonLoader className='h-40' />}>
+          <Suspense fallback={<SkeletonLoader className='min-h-[148px]' />}>
             {stockSymbol.then(symbol => (
               <ActiveAlerts symbol={symbol} />
             ))}

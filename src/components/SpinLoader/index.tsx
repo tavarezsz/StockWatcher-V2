@@ -4,13 +4,20 @@ import { Skeleton } from '@mui/material';
 type SpinLoaderProps = {
   className?: string;
   heigth?: number;
-  width?: number
+  width?: number;
 };
 
-export function SkeletonLoader({heigth=200, width, className = '' }: SpinLoaderProps) {
+export function SkeletonLoader({
+  heigth,
+  width,
+  className = '',
+}: SpinLoaderProps) {
   return (
-  <div className={`h-full ${className}`}>
-      <Skeleton height={heigth} width={width}/>
-    </div>
+    <Skeleton
+      variant='rounded'
+      height={heigth}
+      width={width}
+      className={clsx('w-full', className)}
+    />
   );
 }

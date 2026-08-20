@@ -7,35 +7,38 @@ type InfoSectionProps = {
 };
 
 export async function InfoSection({ symbol }: InfoSectionProps) {
+  
   const stock = await stockService.getStockCached(symbol);
   const price = formatPrice(stock.price);
   const lastChange = stock.lastChange
     ? formatLastUpdate(stock.lastChange)
     : null;
 
-  const openPrice = formatPrice(stock.openPrice)
-  const dayLow = formatPrice(stock.dayLow)
-  const dayhigh = formatPrice(stock.dayHigh)
+  const openPrice = formatPrice(stock.openPrice);
+  const dayLow = formatPrice(stock.dayLow);
+  const dayhigh = formatPrice(stock.dayHigh);
 
-  const indicatorWrapClass = 'flex min-w-0 flex-col'
-  const indicatorLabelClass = 'text-[10px] text-muted font-bold uppercase sm:text-xs'
-  const indicatorValueClass = 'break-words text-sm font-bold text-primary sm:text-lg'
+  const indicatorWrapClass = 'flex min-w-0 flex-col';
+  const indicatorLabelClass =
+    'text-[10px] text-muted font-bold uppercase sm:text-xs';
+  const indicatorValueClass =
+    'break-words text-sm font-bold text-primary sm:text-lg';
 
   return (
     <section className='flex flex-col gap-7 rounded-2xl border border-border bg-white p-5 sm:p-6 lg:gap-10 lg:p-8'>
       <div className='flex flex-col gap-1'>
         <p className='text-muted text-sm font-semibold'>PREÇO ATUAL</p>
         <div className='flex flex-wrap items-end gap-1'>
-          <p className='text-3xl font-black text-primary sm:text-4xl lg:text-5xl'>{price}</p>
+          <p className='text-3xl font-black text-primary sm:text-4xl lg:text-5xl'>
+            {price}
+          </p>
           <VariationBadge
             variation={stock.changePercentDay}
             background={false}
           />
         </div>
         {lastChange && (
-          <p className='text-muted text-sm'>
-            Última atualização: {lastChange}
-          </p>
+          <p className='text-muted text-sm'>Última atualização: {lastChange}</p>
         )}
       </div>
 
