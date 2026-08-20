@@ -140,7 +140,7 @@ Mas pode ser rodado localmente seguindo os passos a seguir
 ### Instalação
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/tavarezsz/StockWatcher-V2
 cd stockwatcher
 ```
 
