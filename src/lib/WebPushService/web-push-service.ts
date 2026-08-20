@@ -148,10 +148,10 @@ export class WebPushService {
       notification.targetValueType === "variationDay"
         ? `${notification.symbol} variou ${formatVariation(
             notification.currentVariation,
-          )}% no dia e atingiu seu alerta.`
+          )}% no dia e está próximo do seu alerta.`
         : `${notification.symbol} está cotada a ${formatPrice(
             notification.currentPrice,
-          )} e atingiu seu alerta.`;
+          )} e está próximo do seu alerta.`;
 
     return this.sendToUser(notification.userId, {
       title: `Alerta de ${notification.symbol} disparado`,

@@ -7,7 +7,6 @@ import { alertRespository } from "@/repositories/alert";
 import { stockRepository } from "@/repositories/stock";
 import { cacheLife, cacheTag, updateTag, revalidateTag } from "next/cache";
 import { StockModel } from "@/models/stock-model";
-import { stockService } from "../StockService/stock-service";
 import { webPushService } from "../WebPushService";
 
 async function getUserAlertsCachedInternal(userId: string): Promise<AlertModel[]> {
@@ -24,7 +23,6 @@ async function getUserAlertsCachedInternal(userId: string): Promise<AlertModel[]
 export class AlertService {
   //valor usado como margen de erro, pra o alerta não considerar um valor exato somente
   private readonly tolerance = this.getTolerance();
-  private readonly quoteRefreshIntervalMs = 10 * 60 * 1000;
 
   private getTolerance(): number {
     const configuredTolerance = Number(
@@ -140,41 +138,30 @@ export class AlertService {
     return await getUserAlertsCachedInternal(userId)
   }
 
-  async checkAllAlerts(): Promise<{ checked: number; triggered: number }> {
-    const activeAlerts = await alertRespository.findAllActive();
+  async checkAllAlerts(
+    refreshedSymbols?: readonly string[],
+  ): Promise<{ checked: number; triggered: number; skipped: number }> {
+    const allActiveAlerts = await alertRespository.findAllActive();
+    const refreshedSymbolSet = refreshedSymbols
+      ? new Set(refreshedSymbols)
+      : null;
+    const activeAlerts = refreshedSymbolSet
+      ? allActiveAlerts.filter((alert) =>
+          refreshedSymbolSet.has(alert.stockSymbol),
+        )
+      : allActiveAlerts;
+    const skipped = allActiveAlerts.length - activeAlerts.length;
 
     if (activeAlerts.length === 0) {
-      return { checked: 0, triggered: 0 };
+      return { checked: 0, triggered: 0, skipped };
     }
 
     //deduplicação de todas as stocks
     const uniqueSymbols = [...new Set(activeAlerts.map((a) => a.stockSymbol))];
 
-    const persistedStocks =
-      await stockRepository.findManyBySymbol(uniqueSymbols);
-    const persistedStocksBySymbol = new Map(
-      persistedStocks.map((stock) => [stock.symbol, stock]),
-    );
-    const now = Date.now();
-    const staleSymbols = uniqueSymbols.filter((symbol) => {
-      const stock = persistedStocksBySymbol.get(symbol);
-
-      return (
-        !stock?.lastChange ||
-        now - stock.lastChange.getTime() >= this.quoteRefreshIntervalMs
-      );
-    });
-
-    // Atualiza somente cotações ausentes ou com mais de 10 minutos.
-    await Promise.all(
-      staleSymbols.map((symbol) => stockService.refreshQuoteFromCron(symbol)),
-    );
-
-    // Se houve atualização, busca novamente para usar os valores mais recentes.
-    const stocks =
-      staleSymbols.length > 0
-        ? await stockRepository.findManyBySymbol(uniqueSymbols)
-        : persistedStocks;
+    // Este método apenas avalia valores já persistidos. A atualização das
+    // cotações é responsabilidade da etapa anterior do cron consolidado.
+    const stocks = await stockRepository.findManyBySymbol(uniqueSymbols);
     const stockMap = new Map(stocks.map((s) => [s.symbol, s]));
 
     let triggeredCount = 0;
@@ -224,7 +211,11 @@ export class AlertService {
       revalidateTag(`alerts:${userId}`, "max"),
     );
 
-    return { checked: activeAlerts.length, triggered: triggeredCount };
+    return {
+      checked: activeAlerts.length,
+      triggered: triggeredCount,
+      skipped,
+    };
   }
 }
 

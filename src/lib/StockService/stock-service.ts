@@ -7,6 +7,7 @@ import type { SearchResultModel } from "@/models/search-result-model";
 export type RefreshQuotesResponse = {
   updated: number;
   errors: number;
+  updatedSymbols: string[];
 };
 
 async function getStockCachedInternal(symbol: string): Promise<StockModel> {
@@ -109,7 +110,7 @@ class StockService {
     ];
 
     if (allStockSymbols.length === 0) {
-      return { updated: 0, errors: 0 };
+      return { updated: 0, errors: 0, updatedSymbols: [] };
     }
 
     let freshStocks: StockModel[];
@@ -120,7 +121,11 @@ class StockService {
     } catch (error) {
       console.error("Erro ao atualizar cotações no provider", error);
 
-      return { updated: 0, errors: allStockSymbols.length };
+      return {
+        updated: 0,
+        errors: allStockSymbols.length,
+        updatedSymbols: [],
+      };
     }
 
     const requestedSymbols = new Set(allStockSymbols);
@@ -145,6 +150,9 @@ class StockService {
     const updated = updateResults.filter(
       (result) => result.status === "fulfilled",
     ).length;
+    const updatedSymbols = updateResults.flatMap((result, index) =>
+      result.status === "fulfilled" ? [uniqueFreshStocks[index].symbol] : [],
+    );
     const updateErrors = updateResults.length - updated;
 
     updateResults.forEach((result, index) => {
@@ -157,6 +165,7 @@ class StockService {
     return {
       updated,
       errors: missingStocks + updateErrors,
+      updatedSymbols,
     };
   }
 
