@@ -10,7 +10,7 @@
 
 ## Sobre o projeto
 
-O StockWatcher é um MVP desenvolvido para centralizar informações relevantes para quem acompanha uma carteira de ações. A aplicação permite pesquisar ativos, registrar posições, visualizar desempenho e distribuição da carteira e criar alertas por preço ou variação diária.
+O StockWatcher(https://stock-watcher-v2.vercel.app/) é um MVP desenvolvido para centralizar informações relevantes para quem acompanha uma carteira de ações. A aplicação permite pesquisar ativos, registrar posições, visualizar desempenho e distribuição da carteira e criar alertas por preço ou variação diária.
 
 Além das funcionalidades, o projeto foi construído como exercício de arquitetura de software aplicada a um produto real. O foco está na separação de responsabilidades, no baixo acoplamento com serviços externos e no uso dos recursos modernos do Next.js para renderização, cache e mutações no servidor.
 
@@ -124,6 +124,11 @@ prisma/
 ```
 
 ## Executando localmente
+
+O projeto está disponível pra uso na url: [https://stock-watcher-v2.vercel.app/](https://stock-watcher-v2.vercel.app/)
+
+Mas pode ser rodado localmente seguindo os passos a seguir
+
 
 ### Pré-requisitos
 
