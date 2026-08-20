@@ -60,22 +60,20 @@ export function LoginForm() {
       )}
 
       <button
-        name='intent'
-        value='login'
+        type='submit'
         disabled={isPending}
         className='rounded-lg bg-green-600 px-4 py-2.5 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60'
       >
         {isPending ? 'Aguarde...' : 'Entrar'}
       </button>
 
-      <button
-        name='intent'
-        value='signup'
-        disabled={isPending}
-        className='rounded-lg border border-green-600 px-4 py-2.5 font-semibold text-green-700 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-60'
+      <Link
+        href='/signup'
+        prefetch={false}
+        className='rounded-lg border border-green-600 px-4 py-2.5 text-center font-semibold text-green-700 transition hover:bg-green-50'
       >
         Criar conta
-      </button>
+      </Link>
     </form>
   );
 }

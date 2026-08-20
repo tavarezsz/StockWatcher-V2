@@ -18,6 +18,7 @@ export function AppShell({ children }: AppShellProps) {
   const isPublicRoute =
     pathname === '/about' ||
     pathname === '/login' ||
+    pathname === '/signup' ||
     pathname.startsWith('/auth/');
 
   if (isPublicRoute) {

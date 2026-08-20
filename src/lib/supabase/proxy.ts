@@ -49,6 +49,7 @@ export async function updateSession(request: NextRequest) {
   const isPublicRoute =
     request.nextUrl.pathname === '/about' ||
     request.nextUrl.pathname === '/login' ||
+    request.nextUrl.pathname === '/signup' ||
     request.nextUrl.pathname.startsWith('/auth/');
 
   if (!data?.claims && !isPublicRoute) {
@@ -60,7 +61,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     data?.claims &&
-    ['/about', '/login'].includes(request.nextUrl.pathname)
+    ['/about', '/login', '/signup'].includes(request.nextUrl.pathname)
   ) {
     const url = request.nextUrl.clone();
     url.pathname = '/';
