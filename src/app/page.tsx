@@ -14,7 +14,7 @@ export default function Home() {
       </Suspense>
       <FeaturedIndicators />
       <Suspense fallback={<SkeletonLoader className='min-h-[168px] lg:min-h-[342px]' />}>
-        <FeaturedStocks seeAllLink='/stock' lineItems={2} maxItems={4} />
+        <FeaturedStocks lineItems={2} maxItems={4} />
       </Suspense>
       <Suspense fallback={<SkeletonLoader className='min-h-[341px] lg:min-h-[400px]' />}>
         <RecentAlerts />

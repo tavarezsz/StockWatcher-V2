@@ -1,5 +1,5 @@
 import { StockModel } from "@/models/stock-model";
-import { StockRepository } from "./stock-repository";
+import { StockRepository, StockSearchOptions } from "./stock-repository";
 import 'dotenv/config'
 
 import { db } from "../client";
@@ -76,5 +76,23 @@ export class PrismaStockRepository implements StockRepository {
 
     return stock
   }
+
+  async search(
+  options: StockSearchOptions = {},
+): Promise<StockModel[]> {
+  const {
+    where,
+    orderBy,
+    limit = 10,
+    offset,
+  } = options;
+
+  return db.stock.findMany({
+    where,
+    orderBy,
+    skip: offset,
+    take: Math.min(Math.max(limit, 1), 100),
+  });
+}
 
 }

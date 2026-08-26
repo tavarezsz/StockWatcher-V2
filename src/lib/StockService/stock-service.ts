@@ -1,6 +1,6 @@
 import { StockModel } from "@/models/stock-model";
 import { stockRepository } from "@/repositories/stock";
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
 import { marketDataProvider } from "../marketDataProvider";
 import type { SearchResultModel } from "@/models/search-result-model";
 
@@ -74,6 +74,20 @@ async function getManyStocksCachedInternal(
     });
   }
 }
+
+async function getFeaturedStocksInternal(count: number){
+  'use cache'
+  cacheTag("featured-stocks")
+
+    const stocks = stockRepository.search({
+      orderBy: {
+        changePercentDay: "desc"
+      },
+      limit: count
+    })
+
+    return stocks
+  }
 
 function orderStocksBySymbols(
   stocks: StockModel[],
@@ -162,6 +176,8 @@ class StockService {
       }
     });
 
+    updateTag('featured-stocks')
+
     return {
       updated,
       errors: missingStocks + updateErrors,
@@ -177,6 +193,10 @@ class StockService {
 
   async getManyStocksCached(symbols: string[]): Promise<StockModel[]> {
     return getManyStocksCachedInternal(symbols);
+  }
+
+  async getFeaturedStocksCached(count: number){
+    return getFeaturedStocksInternal(count)
   }
 }
 
